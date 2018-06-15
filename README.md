@@ -17,8 +17,6 @@ Dibuat oleh Antonio Setya (13516002)
 
 ## API dan *OpenWeather* API
 
-__*subject to change*__
-
 API (*Application Programming Interface*) adalah sekumpulan protokol, *subroutine*, dan *tools* untuk membangun sebuah aplikasi. Dalam kata lain, API adalah sekumpulan cara untuk melakukan komunikasi dengan komponen *software* lainnya. API dibuat oleh pengembang *software* untuk memudahkan pengembangan aplikasi dan memudahkan komunikasi antar aplikasi. Dengan adanya API, kita dapat menggunakan sebuah fitur dari yang diperlukan suatu *software* lain  tanpa perlu mengetahui bagaimana *software* tersebut "menghasilkan" fitur tersebut.
 
 API sendiri datang dalam berbagai bentuk. Ada API sebagai *library* atau *framework* dari sebuah bahasa pemrograman. (seperti *C++ Standard Template Library* atau *Java Collections Framework*). Ada pula API untuk *operating system*. API ini memberikan perantara antara aplikasi dan *operating system* dimana aplikasi berjalan. Terakhir, ada *Web API*, yang bekerja melalui jaringan komputer (seperti *OpenWeather* ini).
@@ -65,6 +63,8 @@ __*subject to change*__
 
 Terdapat satu package utama saja dalam program ini, yang dibungkus dalam package *com.pyra*, yaitu *weatherforecast*. Package "pembungkus" *com.pyra* dibuat untuk mengikuti *Google Java Code Style*, dan satu package *weatherforecast* dibuat karena program tidak terlalu besar untuk dipecah-pecah menjadi beberapa package.
 
+Dalam package *com.pyra.weatherforecast*, terdapat empat (4) *class*, yaitu *Main*, *UI*, *CitySearcher*, dan *WeatherGrabber*. Kelas *Main* mengandung program utama, *UI* mengatur tampilan GUI program (menggunakan *Java SWING*), *CitySearcher* bertugas untuk mencari kota dari data lokal berdasarkan kata kunci/*substring* tertentu, dan *WeatherGrabber* bertugas untuk mengambil data cuaca dari *OpenWeather API*.   
+
 [Back to top](#weatherforecast)
 <br>
 
@@ -80,7 +80,7 @@ __*subject to change*__
     <th>Keterangan</th>
   </tr>
   <tr>
-    <td colspan="4">com.pyra.weatherforecast</td>
+    <td colspan="4">Package : com.pyra.weatherforecast</td>
   </tr>
   <tr>
     <td>Main</td>
@@ -102,7 +102,7 @@ __*subject to change*__
   </tr>
   <tr>
     <td><i>WeatherGrabber</i></td>
-    <td></td>
+    <td>*Designing*</td>
     <td></td>
     <td></td>
   </tr>
