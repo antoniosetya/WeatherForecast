@@ -102,7 +102,7 @@ __*subject to change*__
   </tr>
   <tr>
     <td><i>WeatherGrabber</i></td>
-    <td>*Designing*</td>
+    <td><i>Designing</i></td>
     <td></td>
     <td></td>
   </tr>
