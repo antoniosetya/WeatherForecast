@@ -53,6 +53,85 @@ API dari *OpenWeather* dapat menyediakan data dalam format *JSON* atau *XML*. Da
 
 Beberapa *field* yang muncul dalam contoh diatas bisa saja tidak muncul pada saat kita melakukan suatu *request* untuk suatu kota. Hal tersebut dipengaruhi oleh cuaca dan data yang diperoleh oleh *OpenWeather* akan bervariasi untuk setiap kota.
 
+Untuk mendapatkan data prakiraan cuaca sampai dengan 5 hari kedepan, kita dapat melakukan *GET request* ke
+ 
+```api.openweathermap.org/data/2.5/forecast?id={id_kota}&appid={API_key}```,
+
+dengan contoh *response* dari *API* sebagai berikut :
+
+```
+{
+  "cod": "200",
+  "message": 0.0097,
+  "cnt": 2,
+  "list": [
+    {
+      "dt": 1529377200,
+      "main": {
+        "temp": 305.5,
+        "temp_min": 302.371,
+        "temp_max": 305.5,
+        "pressure": 1024.71,
+        "sea_level": 1025.16,
+        "grnd_level": 1024.71,
+        "humidity": 89,
+        "temp_kf": 3.13
+      },
+      "weather": [
+        {
+          "id": 801,
+          "main": "Clouds",
+          "description": "few clouds",
+          "icon": "02d"
+        }
+      ],
+      "clouds": {
+        "all": 12
+      },
+      "wind": {
+        "speed": 3.57,
+        "deg": 109.001
+      },
+      "sys": {
+        "pod": "d"
+      },
+      "dt_txt": "2018-06-19 03:00:00"
+    },
+    {
+      "dt": 1529388000,
+      "main": {
+        "temp": 306.11,
+        "temp_min": 303.764,
+        "temp_max": 306.11,
+        "pressure": 1022.99,
+        "sea_level": 1023.5,
+        "grnd_level": 1022.99,
+        "humidity": 83,
+        "temp_kf": 2.35
+      },
+      "weather": [
+        {
+          "id": 801,
+          "main": "Clouds",
+          "description": "few clouds",
+          "icon": "02d"
+        }
+      ],
+      "clouds": {
+        "all": 12
+      },
+      "wind": {
+        "speed": 3.76,
+        "deg": 53.0044
+      },
+      "sys": {
+        "pod": "d"
+      },
+      "dt_txt": "2018-06-19 06:00:00"
+    }
+  ]
+}
+```
 
 [Back to top](#weatherforecast)
 <br>
@@ -63,14 +142,17 @@ __*subject to change*__
 
 Terdapat satu package utama saja dalam program ini, yang dibungkus dalam package *com.pyra*, yaitu *weatherforecast*. Package "pembungkus" *com.pyra* dibuat untuk mengikuti *Google Java Code Style*, dan satu package *weatherforecast* dibuat karena program tidak terlalu besar untuk dipecah-pecah menjadi beberapa package.
 
-Dalam package *com.pyra.weatherforecast*, terdapat empat (4) *class*, yaitu *Main*, *UI*, *CitySearcher*, dan *WeatherGrabber*. Kelas *Main* mengandung program utama, *UI* mengatur tampilan GUI program (menggunakan *Java SWING*), *CitySearcher* bertugas untuk mencari kota dari data lokal berdasarkan kata kunci/*substring* tertentu, dan *WeatherGrabber* bertugas untuk mengambil data cuaca dari *OpenWeather API*.   
+Dalam package *com.pyra.weatherforecast*, terdapat empat (4) *class* "penting", yaitu : 
+- *Main* : program utama
+- *UI* : mengatur tampilan GUI program (menggunakan *Java SWING*)
+- *CitySearcher* : bertugas untuk mencari kota dari data lokal berdasarkan kata kunci/*substring* tertentu dan mengembalikan ID dari kota tersebut. ID tersebut digunakan untuk berkomunikasi dengan *OpenWeather API*.
+- *WeatherGrabber* : bertugas untuk mengambil data cuaca dari *OpenWeather API* berdasarkan ID dari kota yang diinginkan.   
 
 [Back to top](#weatherforecast)
 <br>
 
 ## *Checklist*
 
-__*subject to change*__
 
 <table>
   <tr>
@@ -102,9 +184,15 @@ __*subject to change*__
   </tr>
   <tr>
     <td><i>WeatherGrabber</i></td>
-    <td>*Designing*</td>
+    <td><i>In Development</i></td>
     <td></td>
+    <td>Sudah dapat mengambil data <i>weather</i> dan <i>forecast</i>.</td>
+  </tr>
+  <tr>
+    <td><i>Weather</i></td>
+    <td><i>Planned</i></td>
     <td></td>
+    <td>Representasi data <i>weather</i></td>
   </tr>
 </table>
 
