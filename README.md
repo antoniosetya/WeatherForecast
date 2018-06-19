@@ -184,7 +184,7 @@ Dalam package *com.pyra.weatherforecast*, terdapat empat (4) *class* "penting", 
   </tr>
   <tr>
     <td><i>WeatherGrabber</i></td>
-    <td><i>In Development</i></td>
+    <td><i>Designing</i></td>
     <td></td>
     <td>Sudah dapat mengambil data <i>weather</i> dan <i>forecast</i>.</td>
   </tr>
