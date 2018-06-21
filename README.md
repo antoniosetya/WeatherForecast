@@ -133,6 +133,8 @@ dengan contoh *response* dari *API* sebagai berikut :
 }
 ```
 
+Untuk lebih lengkapnya mengenai *OpenWeather API*, dapat dilihat [disini](https://openweathermap.org/api).
+
 [Back to top](#weatherforecast)
 <br>
 
@@ -140,13 +142,29 @@ dengan contoh *response* dari *API* sebagai berikut :
 
 __*subject to change*__
 
-Terdapat satu package utama saja dalam program ini, yang dibungkus dalam package *com.pyra*, yaitu *weatherforecast*. Package "pembungkus" *com.pyra* dibuat untuk mengikuti *Google Java Code Style*, dan satu package *weatherforecast* dibuat karena program tidak terlalu besar untuk dipecah-pecah menjadi beberapa package.
+Terdapat dua package utama dalam program ini, yang dibungkus dalam package *com.pyra*, yaitu *weatherforecast* dan *weatherforecast.data*. Package "pembungkus" *com.pyra* dibuat untuk mengikuti *Google Java Code Style*.
 
 Dalam package *com.pyra.weatherforecast*, terdapat empat (4) *class* "penting", yaitu : 
 - *Main* : program utama
-- *UI* : mengatur tampilan GUI program (menggunakan *Java SWING*)
+- *Screen* : mengatur tampilan GUI program (menggunakan *Java SWING*)
 - *CitySearcher* : bertugas untuk mencari kota dari data lokal berdasarkan kata kunci/*substring* tertentu dan mengembalikan ID dari kota tersebut. ID tersebut digunakan untuk berkomunikasi dengan *OpenWeather API*.
 - *WeatherGrabber* : bertugas untuk mengambil data cuaca dari *OpenWeather API* berdasarkan ID dari kota yang diinginkan.   
+
+Dalam package tersebut pula, terdapat satu package lagi, yaitu *data*, yang berisi representasi data yang digunakan dalam program ini. Dalam package ini terdapat *class* *City*, yang merepresentasikan sebuah kota, dan *Weather* yang merepresentasikan kondisi cuaca di suatu tempat.
+
+Berikut adalah ilustrasi hierarkis dari *package* yang terdapat dalam program ini.
+```
+com
+ |--- pyra
+        |---- weatherforecast
+                        |---- Main
+                        |---- Screen
+                        |---- CitySearcher
+                        |---- WeatherGrabber
+                        |---- data
+                               |---- City
+                               |---- Weather
+```
 
 [Back to top](#weatherforecast)
 <br>
@@ -165,34 +183,43 @@ Dalam package *com.pyra.weatherforecast*, terdapat empat (4) *class* "penting", 
     <td colspan="4">Package : com.pyra.weatherforecast</td>
   </tr>
   <tr>
-    <td>Main</td>
-    <td></td>
+    <td><i>Main</i></td>
+    <td><i>In Progress</i></td>
     <td>N/A</td>
     <td></td>
   </tr>
   <tr>
-    <td>UI</td>
-    <td></td>
+    <td><i>Screen</i></td>
+    <td><i>In Progress</i></td>
     <td>N/A</td>
     <td></td>
   </tr>
   <tr>
     <td><i>CitySearcher</i></td>
+    <td><i>In Progress</i></td>
     <td></td>
-    <td></td>
-    <td></td>
+    <td>Sudah dapat mencari kota.</td>
   </tr>
   <tr>
     <td><i>WeatherGrabber</i></td>
-    <td><i>Designing</i></td>
+    <td><i>In Progress</i></td>
     <td></td>
     <td>Sudah dapat mengambil data <i>weather</i> dan <i>forecast</i>.</td>
+  </tr>
+  <tr>
+    <td colspan="4">Package : com.pyra.weatherforecast.data</td>
+  </tr>
+  <tr>
+    <td><i>City</i></td>
+    <td><i>In Progress</i></td>
+    <td><i>Planned</i></td>
+    <td></td>
   </tr>
   <tr>
     <td><i>Weather</i></td>
     <td><i>Planned</i></td>
     <td></td>
-    <td>Representasi data <i>weather</i></td>
+    <td></td>
   </tr>
 </table>
 
@@ -201,7 +228,12 @@ Dalam package *com.pyra.weatherforecast*, terdapat empat (4) *class* "penting", 
  
 ## *Compiling and Running*
 
-TBD
+__*subject to change*__
+
+### *Dependencies*
+- [Java 8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
+- [json-simple](https://code.google.com/archive/p/json-simple/)
+- [Eclipse IDE](http://www.eclipse.org/downloads/packages/eclipse-ide-java-developers/oxygen3a) (*optional*, untuk *compiling*)
 
 [Back to top](#weatherforecast)
 <br>
