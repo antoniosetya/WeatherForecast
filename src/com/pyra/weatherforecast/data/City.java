@@ -1,6 +1,6 @@
 package com.pyra.weatherforecast.data;
 
-public class City {
+public class City implements Cloneable {
   
   private String id;
   private String name;
@@ -91,5 +91,10 @@ public class City {
   @Override
   public String toString() {
     return "(" + id + ") " + name + ", " + country + " (" + lat + "," + lon + ")";
+  }
+  
+  @Override
+  public City clone() {
+    return (new City(id,name,country,lat,lon));
   }
 }

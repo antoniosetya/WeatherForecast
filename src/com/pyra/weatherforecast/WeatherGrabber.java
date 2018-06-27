@@ -1,5 +1,6 @@
 package com.pyra.weatherforecast;
 
+import com.pyra.weatherforecast.data.Weather;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -10,7 +11,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-
 
 public class WeatherGrabber {
 
@@ -65,8 +65,9 @@ public class WeatherGrabber {
       } catch (ParseException pe) {
         System.out.println(pe);
       }
-      System.out.println(data.get("name"));
-      System.out.println(data.get("weather"));
+      System.out.println(data);
+      Weather current = new Weather(data);
+      System.out.println(current);
     } else {
       // Request not OK 
       System.out.println("Got " + conn.getResponseCode() + " as response code.");

@@ -145,9 +145,9 @@ __*subject to change*__
 Terdapat dua package utama dalam program ini, yang dibungkus dalam package *com.pyra*, yaitu *weatherforecast* dan *weatherforecast.data*. Package "pembungkus" *com.pyra* dibuat untuk mengikuti *Google Java Code Style*.
 
 Dalam package *com.pyra.weatherforecast*, terdapat empat (4) *class* "penting", yaitu : 
-- *Main* : program utama
-- *Screen* : mengatur tampilan GUI program (menggunakan *Java SWING*)
-- *CitySearcher* : bertugas untuk mencari kota dari data lokal berdasarkan kata kunci/*substring* tertentu dan mengembalikan ID dari kota tersebut. ID tersebut digunakan untuk berkomunikasi dengan *OpenWeather API*.
+- *Main* : program utama dan layar utama (menampilkan layar pencarian kota)
+- *WeatherScreen* : menampilkan cuaca sekarang dan prakiraan cuaca kota yang dipilih
+- *CitySearcher* : bertugas untuk mencari kota dari data lokal berdasarkan kata kunci/*substring* tertentu dan mengembalikan ID dari kota tersebut. ID tersebut digunakan untuk berkomunikasi dengan *OpenWeather API*
 - *WeatherGrabber* : bertugas untuk mengambil data cuaca dari *OpenWeather API* berdasarkan ID dari kota yang diinginkan.   
 
 Dalam package tersebut pula, terdapat satu package lagi, yaitu *data*, yang berisi representasi data yang digunakan dalam program ini. Dalam package ini terdapat *class* *City*, yang merepresentasikan sebuah kota, dan *Weather* yang merepresentasikan kondisi cuaca di suatu tempat.
@@ -158,7 +158,7 @@ com
  |--- pyra
         |---- weatherforecast
                         |---- Main
-                        |---- Screen
+                        |---- WeatherScreen
                         |---- CitySearcher
                         |---- WeatherGrabber
                         |---- data
@@ -186,10 +186,10 @@ com
     <td><i>Main</i></td>
     <td><i>In Progress</i></td>
     <td>N/A</td>
-    <td></td>
+    <td>Sudah dapat menampilkan pencarian.</td>
   </tr>
   <tr>
-    <td><i>Screen</i></td>
+    <td><i>WeatherScreen</i></td>
     <td><i>In Progress</i></td>
     <td>N/A</td>
     <td></td>
@@ -217,8 +217,8 @@ com
   </tr>
   <tr>
     <td><i>Weather</i></td>
+    <td><i>In Progress</i></td>
     <td><i>Planned</i></td>
-    <td></td>
     <td></td>
   </tr>
 </table>

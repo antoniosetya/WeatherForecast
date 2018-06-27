@@ -55,7 +55,7 @@ public class CitySearcher {
   }
   
   public void setSearchQuery(String searchQuery) {
-    this.searchQuery = searchQuery;
+    this.searchQuery = searchQuery.toLowerCase();
   }
 
   public boolean isRunning() {
@@ -80,14 +80,13 @@ public class CitySearcher {
       for (Object obj : dataBuffer) {
         JSONObject temp = (JSONObject) obj;
         String cityName = (String) temp.get("name");
-        if (cityName.contains(searchQuery)) {
+        if (cityName.toLowerCase().contains(searchQuery)) {
           String cityId = ((Number) temp.get("id")).toString();
           String country = (String) temp.get("country");
           JSONObject coord = (JSONObject) temp.get("coord");
-          double lat = (Double) coord.get("lat");
-          double lon = (Double) coord.get("lon");
-          resultBuffer.add(new City(cityId,cityName,country,lat,lon));
-        }
+          double lat = ((Number) coord.get("lat")).doubleValue();
+          double lon = ((Number) coord.get("lon")).doubleValue();
+          resultBuffer.add(new City(cityId,cityName,country,lat,lon));        }
         if (!isRunning) {
           break;
         }
