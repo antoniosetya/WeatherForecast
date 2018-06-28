@@ -18,59 +18,87 @@ public class WeatherGrabber {
   private static final String baseURL = "http://api.openweathermap.org/data/2.5/";
   private String cityId;
   private HttpURLConnection conn;
+  private int status;
   private JSONObject data;
     
   public WeatherGrabber(final String cityId) {
     this.cityId = cityId;
+    resetStatus();
   }
 
   public String getCityId() {
     return cityId;
+  }
+  
+  public int getStatus() {
+    return status;
   }
 
   public void setCityId(String cityId) {
     this.cityId = cityId;
   }
   
-  private void makeRequest(char mode) throws MalformedURLException, IOException {
+  private void resetStatus() {
+    status = 0;
+  }
+  
+  private void makeRequest(char mode) {
+    resetStatus();
     String tempString;
     if (mode == 'w')  {
       tempString = baseURL + "weather?id=" + cityId + "&appid=" + apiKey;
     } else { // mode == 'f'
       tempString = baseURL + "forecast?id=" + cityId + "&appid=" + apiKey;
     }
-    URL curUrl = new URL(tempString);
-    conn = (HttpURLConnection) curUrl.openConnection();
-    conn.setRequestMethod("GET");
-    conn.setRequestProperty("User-Agent","Mozilla/5.0");
+    URL curUrl = null;
+    try {
+      curUrl = new URL(tempString);
+    } catch (MalformedURLException mue) {
+      status = -999;
+    }
+    if (status != -999) {
+      try {
+        conn = (HttpURLConnection) curUrl.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("User-Agent","Mozilla/5.0");        
+      } catch (IOException ie) {
+        status = -998;
+      }
+    }
   }
   
-  public void grabWeather() throws MalformedURLException, IOException {
+  public void grabWeather(Weather in) {
     // Opening & requesting data to OpenWeather
     makeRequest('w');
     
-    if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
-      // Request OK - read data
-      BufferedReader resData = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-      String temp = resData.readLine();
-      StringBuffer jsonString = new StringBuffer();
-      while (temp != null) {
-        jsonString.append(temp);
-        temp = resData.readLine();
-      }
-      // Parsing JSON data
-      JSONParser parser = new JSONParser();
+    if ((status != -998) && (status != -999)) {
       try {
-        data = (JSONObject) parser.parse(jsonString.toString());        
-      } catch (ParseException pe) {
-        System.out.println(pe);
+        status = conn.getResponseCode();
+      } catch (IOException ie) {
+        status = -998;
       }
-      System.out.println(data);
-      Weather current = new Weather(data);
-      System.out.println(current);
-    } else {
-      // Request not OK 
-      System.out.println("Got " + conn.getResponseCode() + " as response code.");
+      if (status == HttpURLConnection.HTTP_OK) {
+        // Request OK - read data
+        StringBuffer jsonString = new StringBuffer();
+        try {
+          BufferedReader resData = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+          String temp = resData.readLine();
+          while (temp != null) {
+            jsonString.append(temp);
+            temp = resData.readLine();
+          }
+        } catch (IOException ie) {
+          status = -998;
+        }
+        // Parsing JSON data
+        JSONParser parser = new JSONParser();
+        try {
+          data = (JSONObject) parser.parse(jsonString.toString());        
+        } catch (ParseException pe) {
+          status = -997;
+        }
+        in.fillFromJson(data);
+      } // else, do nothing
     }
   }
   

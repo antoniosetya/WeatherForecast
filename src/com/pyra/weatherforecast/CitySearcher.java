@@ -86,7 +86,8 @@ public class CitySearcher {
           JSONObject coord = (JSONObject) temp.get("coord");
           double lat = ((Number) coord.get("lat")).doubleValue();
           double lon = ((Number) coord.get("lon")).doubleValue();
-          resultBuffer.add(new City(cityId,cityName,country,lat,lon));        }
+          resultBuffer.add(new City(cityId,cityName,country,lat,lon));        
+        }
         if (!isRunning) {
           break;
         }

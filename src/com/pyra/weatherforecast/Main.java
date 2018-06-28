@@ -6,7 +6,6 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
@@ -24,6 +23,7 @@ public class Main extends JFrame {
   private JPanel searchResultContainer;
   private JScrollPane scrollableResultContainer;
   private ArrayList<ResultElement> searchResultView = new ArrayList<ResultElement>();
+  private ArrayList<WeatherScreen> weatherWindows = new ArrayList<WeatherScreen>();
   private JTextField searchQuery;
   private JButton searchButton;
   private CitySearcher searcher;
@@ -52,9 +52,7 @@ public class Main extends JFrame {
       @Override
       public void mouseReleased(final MouseEvent me) {
         if (SwingUtilities.isLeftMouseButton(me)) {
-          if (searchQuery.getText().length() >= 3) {
-            doSearch();
-          }
+          doSearch();
         }
       }
     });
@@ -87,20 +85,31 @@ public class Main extends JFrame {
       searchResultView.clear();
       searchResultContainer.removeAll();
     }
-    searcher.setSearchQuery(searchQuery.getText());
-    searcher.search();
-    for (City result : searcher.getResult()) {
-      searchResultView.add(new ResultElement(result));
+    if (searchQuery.getText().length() <= 3) {
+      searchResultView.add(new ResultElement(
+          new City("","Please use more than 3 characters...")));
       searchResultContainer.add(searchResultView.get(searchResultView.size() - 1));
-      ResultElement temp = searchResultView.get(searchResultView.size() - 1);
-      temp.addMouseListener(new MouseAdapter() {
-        @Override
-        public void mouseReleased(MouseEvent me) {
-          if (SwingUtilities.isLeftMouseButton(me)) {
-            WeatherScreen tempScreen = new WeatherScreen(temp.getCity());
+    } else {
+      searcher.setSearchQuery(searchQuery.getText());
+      searcher.search();
+      for (City result : searcher.getResult()) {
+        searchResultView.add(new ResultElement(result));
+        searchResultContainer.add(searchResultView.get(searchResultView.size() - 1));
+        ResultElement temp = searchResultView.get(searchResultView.size() - 1);
+        temp.addMouseListener(new MouseAdapter() {
+          @Override
+          public void mouseReleased(MouseEvent me) {
+            if (SwingUtilities.isLeftMouseButton(me)) {
+              weatherWindows.add(new WeatherScreen(temp.getCity()));
+            }
           }
-        }
-      });
+        });
+      }
+      if (searchResultView.size() == 0) {
+        searchResultView.add(new ResultElement(
+            new City("","Cannot found " + searchQuery.getText())));
+        searchResultContainer.add(searchResultView.get(searchResultView.size() - 1));
+      }
     }
     searchResultContainer.revalidate();
     searchResultContainer.repaint();
@@ -149,15 +158,6 @@ public class Main extends JFrame {
   public static void main(String[] args) {
     Main mainWindow = new Main();
     mainWindow.setVisible(true);
-    /*
-    WeatherGrabber wg = new WeatherGrabber("1642907");
-    try {
-      wg.grabWeather();
-    } catch (MalformedURLException mue) {
-      System.out.println("Wrong URL!");
-    } catch (IOException ie) {
-      System.out.println("Connection error!");
-    }*/
   }
   
   

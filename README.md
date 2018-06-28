@@ -192,7 +192,7 @@ com
     <td><i>WeatherScreen</i></td>
     <td><i>In Progress</i></td>
     <td>N/A</td>
-    <td></td>
+    <td>Sudah dapat menampilkan cuaca.</td>
   </tr>
   <tr>
     <td><i>CitySearcher</i></td>
@@ -219,6 +219,12 @@ com
     <td><i>Weather</i></td>
     <td><i>In Progress</i></td>
     <td><i>Planned</i></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><i>Forecast</i></td>
+    <td><i>Planned</i></td>
+    <td></td>
     <td></td>
   </tr>
 </table>
