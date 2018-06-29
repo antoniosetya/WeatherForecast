@@ -1,6 +1,9 @@
 package com.pyra.weatherforecast;
 
 import com.pyra.weatherforecast.data.City;
+import com.pyra.weatherforecast.data.Forecast;
+import com.pyra.weatherforecast.data.Weather;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;

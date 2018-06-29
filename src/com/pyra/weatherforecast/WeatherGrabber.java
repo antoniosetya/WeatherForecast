@@ -1,6 +1,7 @@
 package com.pyra.weatherforecast;
 
 import com.pyra.weatherforecast.data.Weather;
+import com.pyra.weatherforecast.data.Forecast;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -102,31 +103,38 @@ public class WeatherGrabber {
     }
   }
   
-  public void grabForecast() throws MalformedURLException, IOException {
+  public void grabForecast(Forecast in) {
     // Opening & requesting data to OpenWeather
     makeRequest('f');
     
-    if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
-      // Request OK - read data
-      BufferedReader resData = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-      String temp = resData.readLine();
-      StringBuffer jsonString = new StringBuffer();
-      while (temp != null) {
-        jsonString.append(temp);
-        temp = resData.readLine();
-      }
-      // Parsing JSON data
-      JSONParser parser = new JSONParser();
+    if ((status != -998) && (status != -999)) {
       try {
-        data = (JSONObject) parser.parse(jsonString.toString());        
-      } catch (ParseException pe) {
-        System.out.println(pe);
+        status = conn.getResponseCode();
+      } catch (IOException ie) {
+        status = -998;
       }
-      System.out.println(data.get("cnt"));
-      System.out.println(((JSONArray)data.get("list")).get(0));
-    } else {
-      // Request not OK 
-      System.out.println("Got " + conn.getResponseCode() + " as response code.");
+      if (status == HttpURLConnection.HTTP_OK) {
+        // Request OK - read data
+        StringBuffer jsonString = new StringBuffer();
+        try {
+          BufferedReader resData = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+          String temp = resData.readLine();
+          while (temp != null) {
+            jsonString.append(temp);
+            temp = resData.readLine();
+          }
+        } catch (IOException ie) {
+          status = -998;
+        }
+        // Parsing JSON data
+        JSONParser parser = new JSONParser();
+        try {
+          data = (JSONObject) parser.parse(jsonString.toString());        
+        } catch (ParseException pe) {
+          System.out.println(pe);
+        }
+        in.addFromJson(data);
+      }
     }
   }
   

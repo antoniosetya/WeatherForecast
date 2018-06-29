@@ -150,7 +150,7 @@ Dalam package *com.pyra.weatherforecast*, terdapat empat (4) *class* "penting", 
 - *CitySearcher* : bertugas untuk mencari kota dari data lokal berdasarkan kata kunci/*substring* tertentu dan mengembalikan ID dari kota tersebut. ID tersebut digunakan untuk berkomunikasi dengan *OpenWeather API*
 - *WeatherGrabber* : bertugas untuk mengambil data cuaca dari *OpenWeather API* berdasarkan ID dari kota yang diinginkan.   
 
-Dalam package tersebut pula, terdapat satu package lagi, yaitu *data*, yang berisi representasi data yang digunakan dalam program ini. Dalam package ini terdapat *class* *City*, yang merepresentasikan sebuah kota, dan *Weather* yang merepresentasikan kondisi cuaca di suatu tempat.
+Dalam package tersebut pula, terdapat satu package lagi, yaitu *data*, yang berisi representasi data yang digunakan dalam program ini. Dalam package ini terdapat *class* *City*, yang merepresentasikan sebuah kota, *Weather* yang merepresentasikan kondisi cuaca di suatu *city*, dan *Forecast* yang merepresentasikan prakiraan cuaca di suatu *city*.
 
 Berikut adalah ilustrasi hierarkis dari *package* yang terdapat dalam program ini.
 ```
@@ -164,6 +164,7 @@ com
                         |---- data
                                |---- City
                                |---- Weather
+                               |---- Forecast
 ```
 
 [Back to top](#weatherforecast)
@@ -174,45 +175,42 @@ com
 
 <table>
   <tr>
+    <th><i>Package</i></th>
     <th><i>Component</i></th>
     <th><i>Remarks</i></th>
     <th><i>JUnit test</i></th>
     <th>Keterangan</th>
   </tr>
   <tr>
-    <td colspan="4">Package : com.pyra.weatherforecast</td>
-  </tr>
-  <tr>
+    <td rowspan="4">com.pyra.weatherforecast</td>
     <td><i>Main</i></td>
     <td><i>In Progress</i></td>
     <td>N/A</td>
-    <td>Sudah dapat menampilkan pencarian.</td>
+    <td><i>Refining UI...</i></td>
   </tr>
   <tr>
     <td><i>WeatherScreen</i></td>
     <td><i>In Progress</i></td>
     <td>N/A</td>
-    <td>Sudah dapat menampilkan cuaca.</td>
+    <td><i>Refining UI...</i></td>
   </tr>
   <tr>
     <td><i>CitySearcher</i></td>
     <td><i>In Progress</i></td>
+    <td><i>Planned</i></td>
     <td></td>
-    <td>Sudah dapat mencari kota.</td>
   </tr>
   <tr>
     <td><i>WeatherGrabber</i></td>
     <td><i>In Progress</i></td>
-    <td></td>
-    <td>Sudah dapat mengambil data <i>weather</i> dan <i>forecast</i>.</td>
-  </tr>
-  <tr>
-    <td colspan="4">Package : com.pyra.weatherforecast.data</td>
-  </tr>
-  <tr>
-    <td><i>City</i></td>
-    <td><i>In Progress</i></td>
     <td><i>Planned</i></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td rowspan="3">com.pyra.weatherforecast.data</td>
+    <td><i>City</i></td>
+    <td><i>Completed</i></td>
+    <td><i>Completed, Passed</i></td>
     <td></td>
   </tr>
   <tr>
@@ -223,7 +221,14 @@ com
   </tr>
   <tr>
     <td><i>Forecast</i></td>
+    <td><i>In Progress</i></td>
     <td><i>Planned</i></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><i>Others</i></td>
+    <td><i>JDepend result</i></td>
+    <td></td>
     <td></td>
     <td></td>
   </tr>

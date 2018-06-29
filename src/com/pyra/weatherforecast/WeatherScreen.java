@@ -3,21 +3,28 @@ package com.pyra.weatherforecast;
 import com.pyra.weatherforecast.data.*;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.util.ArrayList;
+import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
 public class WeatherScreen extends JFrame {
   
   // Data
   private Weather cityWeather;
+  private Forecast cityForecast;
   
   // Top-level container
   private JTabbedPane parentTab = new JTabbedPane();
   private JPanel weatherTab = new JPanel();
-  private JPanel forecastTab = new JPanel();
+  private JScrollPane forecastTab = new JScrollPane(
+      JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+  private JPanel forecastContainer = new JPanel();
   private GroupLayout lmw;
   private GroupLayout lmf;
   // Weather panel elements
@@ -36,18 +43,23 @@ public class WeatherScreen extends JFrame {
     setMinimumSize(new Dimension(500,500));
     setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     setVisible(true);
+    
     // Initializing data
     cityWeather = new Weather();
-    this.cityWeather.setCity(city.clone());
+    cityForecast = new Forecast(city.clone());
+    cityWeather.setCity(city.clone());
+    
     // Set city name as this window title
-    this.setTitle(this.cityWeather.getCity().getName());
+    this.setTitle(cityWeather.getCity().getName());
+    
     // Setting up GUI elements
     lmw = new GroupLayout(weatherTab);
-    lmf = new GroupLayout(forecastTab);
     weatherTab.setLayout(lmw);
-    forecastTab.setLayout(lmf);
     parentTab.addTab("Weather", weatherTab);
     parentTab.addTab("3-Hourly Forecast", forecastTab);
+    forecastTab.setViewportView(forecastContainer);
+    forecastTab.getVerticalScrollBar().setUnitIncrement(10);
+    forecastContainer.setLayout(new GridLayout(0,1));
     setContentPane(parentTab);
     weatherCondition = new JLabel("Loading...");
     cityName = new JLabel(cityWeather.getCity().getName());
@@ -57,11 +69,15 @@ public class WeatherScreen extends JFrame {
     pressure = new JLabel();
     humidity = new JLabel();
     wind = new JLabel();
+    
     // Refresh each tab
     setupWeatherTab();
     refreshForecastTab();
-    //Grabs weather data
+    
+    // Grabs weather data
     refreshWeather();
+    // Grabs forecast data
+    refreshForecast();
   }
   
   private void setupWeatherTab() {
@@ -132,21 +148,26 @@ public class WeatherScreen extends JFrame {
   }
   
   private void refreshForecastTab() {
-    JLabel temp = new JLabel("Coming, uhh..., soon enough...");
-    lmf.setAutoCreateGaps(true);
-    lmf.setAutoCreateContainerGaps(true);
-    lmf.setHorizontalGroup(
-        lmf.createSequentialGroup()
-          .addGroup(lmf.createParallelGroup(GroupLayout.Alignment.LEADING)
-              .addComponent(temp)
-          )
-    );
-    lmf.setVerticalGroup(
-        lmf.createSequentialGroup()
-          .addComponent(temp)
-    );
-    forecastTab.revalidate();
-    forecastTab.repaint();
+    clearForecastTab();
+    if (cityForecast.getForecast().size() <= 0) {
+      JLabel temp = new JLabel("Forecast data not available");
+      forecastContainer.add(temp);
+      forecastContainer.revalidate();
+      forecastContainer.repaint();
+    }
+    else {
+      for (Weather elm : cityForecast.getForecast()) {
+        forecastContainer.add(new ForecastElement(elm));
+      }
+    }
+    forecastContainer.revalidate();
+    forecastContainer.repaint();
+  }
+  
+  private void clearForecastTab() {
+    forecastContainer.removeAll();
+    forecastContainer.revalidate();
+    forecastContainer.repaint();
   }
   
   public void refreshWeather() {
@@ -160,6 +181,58 @@ public class WeatherScreen extends JFrame {
       cityName.setText("Code : " + wg.getStatus());
       weatherTab.revalidate();
       weatherTab.repaint();
+    }
+  }
+  
+  public void refreshForecast() {
+    WeatherGrabber wg = new WeatherGrabber(cityForecast.getCity().getId());
+    wg.grabForecast(cityForecast);
+    if (wg.getStatus() == 200) {
+      refreshForecastTab();
+    } else {
+      clearForecastTab();
+    }
+  }
+ 
+
+  private class ForecastElement extends JPanel {
+    
+    private JLabel time;
+    private JLabel weatherCondition;
+    private JLabel temperature;
+    
+    public ForecastElement(Weather in) {
+      setPreferredSize(new Dimension(326,70));
+      setBorder(BorderFactory.createLineBorder(Color.BLACK));
+      // Time label
+      time = new JLabel(in.getTimestamp().toString());
+      // Forecasted weather label
+      weatherCondition = new JLabel(Weather.weatherCodeToString(in));
+      // Temperature label
+      temperature = new JLabel(in.getTemp() + " K");
+      // Layout manager
+      GroupLayout lm = new GroupLayout(this);
+      this.setLayout(lm);
+      lm.setAutoCreateGaps(true);
+      lm.setAutoCreateContainerGaps(true);
+      lm.setHorizontalGroup(
+          lm.createSequentialGroup()
+            .addGroup(lm.createParallelGroup(GroupLayout.Alignment.LEADING)
+                .addComponent(time)
+                .addGroup(lm.createSequentialGroup()
+                    .addComponent(weatherCondition)
+                    .addComponent(temperature)
+                )
+            )
+      );
+      lm.setVerticalGroup(
+          lm.createSequentialGroup()
+            .addComponent(time)
+            .addGroup(lm.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                .addComponent(weatherCondition)
+                .addComponent(temperature)
+            )
+      );
     }
     
   }
