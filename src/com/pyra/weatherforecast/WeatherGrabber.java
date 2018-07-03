@@ -1,14 +1,16 @@
 package com.pyra.weatherforecast;
 
-import com.pyra.weatherforecast.data.Weather;
 import com.pyra.weatherforecast.data.Forecast;
+import com.pyra.weatherforecast.data.Weather;
+import java.awt.Image;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import org.json.simple.JSONArray;
+import java.util.HashMap;
+import javax.imageio.ImageIO;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -20,10 +22,12 @@ public class WeatherGrabber {
   private String cityId;
   private HttpURLConnection conn;
   private int status;
+  private HashMap<String,Image> weatherIconCache;
   private JSONObject data;
     
   public WeatherGrabber(final String cityId) {
     this.cityId = cityId;
+    this.weatherIconCache = new HashMap<String,Image>();
     resetStatus();
   }
 
@@ -99,6 +103,7 @@ public class WeatherGrabber {
           status = -997;
         }
         in.fillFromJson(data);
+        grabIcon(in);
       } // else, do nothing
     }
   }
@@ -134,8 +139,29 @@ public class WeatherGrabber {
           System.out.println(pe);
         }
         in.addFromJson(data);
+        for (Weather w : in.getForecast()) {
+          grabIcon(w);
+        }
       }
     }
   }
   
+  private void grabIcon(Weather data) {
+    String code = Weather.weatherCodeToImageCode(data);
+    Image temp = weatherIconCache.get(code);
+    if (temp == null) { // if temp is null, grab icon from server
+      try {
+        URL url = new URL("http://openweathermap.org/img/w/" + code + ".png");
+        temp = ImageIO.read(url);
+      } catch (MalformedURLException e) {
+        e.printStackTrace();
+        temp = null;
+      } catch (IOException e) {
+        e.printStackTrace();
+        temp = null;
+      }
+      weatherIconCache.put(code, temp);
+    }
+    data.setWeatherIcon(temp);
+  }
 }

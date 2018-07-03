@@ -1,5 +1,6 @@
 package com.pyra.weatherforecast.data;
 
+import java.awt.Image;
 import java.util.Date;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -7,7 +8,10 @@ import org.json.simple.JSONObject;
 public class Weather {
   
   private City city;
+  // weatherId represents weather code that represents current weather in that City
   private int weatherId;
+  // An image that represents current weather condition
+  private Image weatherIcon;
   // Temperatures are in Kelvin (1 K = 272.15 C)
   private double temp;
   private double tempMin;
@@ -70,6 +74,10 @@ public class Weather {
     return city;
   }
   
+  public Image getWeatherIcon() {
+    return weatherIcon;
+  }
+  
   public int getWeatherId() {
     return weatherId;
   }
@@ -120,6 +128,10 @@ public class Weather {
   
   public void setWeatherId(int weatherId) {
     this.weatherId = weatherId;
+  }
+  
+  public <T extends Image> void setWeatherIcon(T weatherIcon) {
+    this.weatherIcon = weatherIcon;
   }
   
   public void setTempAndMaxMin(double temp, double tempMin, double tempMax) {
@@ -329,5 +341,39 @@ public class Weather {
   
   public static String weatherCodeToString(Weather w) {
     return weatherCodeToString(w.getWeatherId());
+  }
+  
+  public static String weatherCodeToImageCode(Weather w) {
+    int leading = w.getWeatherId() / 100;
+    if (leading == 2) {
+      return "11d";
+    } else if (leading == 3) {
+      return "09d";
+    } else if (leading == 5) {
+      int remainder = w.getWeatherId() % 100;
+      if (remainder <= 10) {
+        return "10d";
+      } else if (remainder == 11) {
+        return "13d";
+      } else { // remainder > 11
+        return "09d";
+      }
+    } else if (leading == 6) {
+      return "13d";
+    } else if (leading == 8) {
+      int remainder = w.getWeatherId() % 10;
+      if (remainder == 0) {
+        return "01d";
+      } else if (remainder == 1) {
+        return "02d";
+      } else if (remainder == 2) {
+        return "03d";
+      } else {
+        return "04d";
+      }
+    } else { // code leading is 7 or not of the above
+      return "50d";
+    }
+    
   }
 }

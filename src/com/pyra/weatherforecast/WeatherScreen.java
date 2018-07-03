@@ -7,11 +7,13 @@ import java.awt.GridLayout;
 import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.LayoutStyle;
 
 public class WeatherScreen extends JFrame {
   
@@ -30,6 +32,7 @@ public class WeatherScreen extends JFrame {
   // Weather panel elements
   private JLabel cityName;
   private JLabel weatherCondition;
+  private JLabel weatherIcon;
   private JLabel temperature;
   private JLabel temperatureLo;
   private JLabel temperatureHi;
@@ -50,7 +53,7 @@ public class WeatherScreen extends JFrame {
     cityWeather.setCity(city.clone());
     
     // Set city name as this window title
-    this.setTitle(cityWeather.getCity().getName());
+    this.setTitle("Loading...");
     
     // Setting up GUI elements
     lmw = new GroupLayout(weatherTab);
@@ -62,6 +65,7 @@ public class WeatherScreen extends JFrame {
     forecastContainer.setLayout(new GridLayout(0,1));
     setContentPane(parentTab);
     weatherCondition = new JLabel("Loading...");
+    weatherIcon = new JLabel();
     cityName = new JLabel(cityWeather.getCity().getName());
     temperature = new JLabel();
     temperatureLo = new JLabel();
@@ -78,6 +82,8 @@ public class WeatherScreen extends JFrame {
     refreshWeather();
     // Grabs forecast data
     refreshForecast();
+    
+    this.setTitle(cityWeather.getCity().getName());
   }
   
   private void setupWeatherTab() {
@@ -90,7 +96,11 @@ public class WeatherScreen extends JFrame {
               .addComponent(cityName)
               .addGroup(lmw.createSequentialGroup()
                   .addComponent(temperatureLo)
+                  .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED,
+                      GroupLayout.PREFERRED_SIZE,Short.MAX_VALUE)
                   .addComponent(temperature)
+                  .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED,
+                      GroupLayout.PREFERRED_SIZE,Short.MAX_VALUE)
                   .addComponent(temperatureHi)
                )
               .addGroup(lmw.createSequentialGroup()
@@ -99,10 +109,16 @@ public class WeatherScreen extends JFrame {
               )
               .addComponent(wind)
           )
+          .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED,
+              GroupLayout.PREFERRED_SIZE,Short.MAX_VALUE)
+          .addComponent(weatherIcon)
     );
     lmw.setVerticalGroup(
         lmw.createSequentialGroup()
-          .addComponent(weatherCondition)
+          .addGroup(lmw.createParallelGroup(GroupLayout.Alignment.BASELINE)
+              .addComponent(weatherCondition)
+              .addComponent(weatherIcon)
+          )
           .addComponent(cityName)
           .addGroup(lmw.createParallelGroup(GroupLayout.Alignment.BASELINE)
               .addComponent(temperatureLo)
@@ -143,6 +159,9 @@ public class WeatherScreen extends JFrame {
     if (cityWeather.getWindHeading() >= 0) {
       wind.setText(wind.getText() + " (" + cityWeather.getWindHeading() + " deg.)");
     }
+    if (cityWeather.getWeatherIcon() != null) {
+      weatherIcon.setIcon(new ImageIcon(cityWeather.getWeatherIcon()));      
+    }
     weatherTab.revalidate();
     weatherTab.repaint();
   }
@@ -154,8 +173,7 @@ public class WeatherScreen extends JFrame {
       forecastContainer.add(temp);
       forecastContainer.revalidate();
       forecastContainer.repaint();
-    }
-    else {
+    } else {
       for (Weather elm : cityForecast.getForecast()) {
         forecastContainer.add(new ForecastElement(elm));
       }
@@ -199,6 +217,7 @@ public class WeatherScreen extends JFrame {
     
     private JLabel time;
     private JLabel weatherCondition;
+    private JLabel weatherIcon;
     private JLabel temperature;
     
     public ForecastElement(Weather in) {
@@ -210,6 +229,11 @@ public class WeatherScreen extends JFrame {
       weatherCondition = new JLabel(Weather.weatherCodeToString(in));
       // Temperature label
       temperature = new JLabel(in.getTemp() + " K");
+      // Icon
+      weatherIcon = new JLabel();
+      if (in.getWeatherIcon() != null) {
+        weatherIcon.setIcon(new ImageIcon(in.getWeatherIcon()));        
+      }
       // Layout manager
       GroupLayout lm = new GroupLayout(this);
       this.setLayout(lm);
@@ -224,14 +248,22 @@ public class WeatherScreen extends JFrame {
                     .addComponent(temperature)
                 )
             )
+            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED,
+                GroupLayout.PREFERRED_SIZE,Short.MAX_VALUE)
+            .addComponent(weatherIcon)
       );
       lm.setVerticalGroup(
           lm.createSequentialGroup()
-            .addComponent(time)
             .addGroup(lm.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                .addComponent(weatherCondition)
-                .addComponent(temperature)
-            )
+                .addGroup(lm.createSequentialGroup()
+                    .addComponent(time)
+                    .addGroup(lm.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                        .addComponent(weatherCondition)
+                        .addComponent(temperature)
+                    )
+                )
+                .addComponent(weatherIcon)
+            ) 
       );
     }
     

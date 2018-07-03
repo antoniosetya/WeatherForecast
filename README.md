@@ -216,7 +216,7 @@ com
   <tr>
     <td><i>Weather</i></td>
     <td><i>In Progress</i></td>
-    <td><i>Planned</i></td>
+    <td><i>In Progress</i></td>
     <td></td>
   </tr>
   <tr>
