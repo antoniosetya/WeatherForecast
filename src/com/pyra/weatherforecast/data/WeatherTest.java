@@ -1,8 +1,7 @@
 package com.pyra.weatherforecast.data;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-import java.util.Date;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -34,7 +33,6 @@ public class WeatherTest {
         + "\"id\":2172797,"
         + "\"name\":\"Cairns\","
         + "\"cod\":200}";
-    System.out.println(jsonTest);
     JSONParser parser = new JSONParser();
     JSONObject jsonTestRep = new JSONObject();
     try {
@@ -50,6 +48,28 @@ public class WeatherTest {
     assertEquals(test.getHumidity(),83);
     assertEquals(test.getPressure(),1019,2);
     assertEquals(test.getTimestamp().getTime(),(((long)1435658272) * ((long) 1000)));
+  }
+  
+  @Test
+  public void testSetters() {
+    Weather test = new Weather();
+    City ctest = new City();
+    test.setCity(ctest);
+    assertEquals(test.getCity(),ctest);
+    test.setWeatherId(500);
+    assertEquals(test.getWeatherId(),500);
+    test.setPressure(1090);
+    assertEquals(test.getPressure(),1090,2);
+    test.setHumidity(70);
+    assertEquals(test.getHumidity(),70);
+    test.setTempAndMaxMin(276, 274.9, 279.8);
+    assertEquals(test.getTemp(),276,2);
+    assertEquals(test.getTempMin(),274.9,2);
+    assertEquals(test.getTempMax(),279.8,2);
+    test.setWindSpeed(15);
+    assertEquals(test.getWindSpeed(),15,2);
+    test.setWindHeading(169.7);
+    assertEquals(test.getWindHeading(),169.7,2);
   }
   
 }

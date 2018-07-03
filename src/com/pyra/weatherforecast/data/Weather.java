@@ -24,6 +24,9 @@ public class Weather {
   private double windSpeed;
   // Wind heading in degrees
   private double windHeading;
+  // Sunrise and sunset time (in UTC)
+  private Date sunrise;
+  private Date sunset;
   // When this data is taken. Time in UTC
   private Date timestamp;
   
@@ -116,7 +119,14 @@ public class Weather {
   public double getWindHeading() {
     return windHeading;
   }
+
+  public Date getSunrise() {
+    return sunrise;
+  }
   
+  public Date getSunset() {
+    return sunset;
+  }
 
   public Date getTimestamp() {
     return timestamp;
@@ -156,23 +166,39 @@ public class Weather {
     this.windHeading = windHeading;
   }
 
+  public void setSunrise(Date sunrise) {
+    this.sunrise = sunrise;
+  }
+  
+  public void setSunset(Date sunset) {
+    this.sunset = sunset;
+  }
+  
   public void setTimestamp(Date timestamp) {
     this.timestamp = timestamp;
   }
   
   public void fillFromJson(JSONObject data) {
     // Extracting city details
+    JSONObject sys = (JSONObject) data.get("sys");
     try {
       JSONObject coord = (JSONObject) data.get("coord");
-      double lat = (Double) coord.get("lat");
-      double lon = (Double) coord.get("lon");
+      double lat = ((Number) coord.get("lat")).doubleValue();
+      double lon = ((Number) coord.get("lon")).doubleValue();
       String cityId = ((Number) data.get("id")).toString();
       String cityName = (String) data.get("name");
-      String cityCountry = (String) ((JSONObject) data.get("sys")).get("country");
+      String cityCountry = (String) sys.get("country");
       this.city = new City(cityId,cityName,cityCountry,lat,lon);
     } catch (NullPointerException npe) {
       // Just leave the fields blank
       this.city = null;
+    }
+    // Extracting sunrise and sunset time
+    try {
+      this.sunrise = new Date(((Number) sys.get("sunrise")).longValue() * 1000);
+      this.sunset = new Date(((Number) sys.get("sunset")).longValue() * 1000);
+    } catch (NullPointerException npe) {
+      // Just leave the fields blank
     }
     // Extracting weather details 
     JSONArray weatherArray = (JSONArray) data.get("weather");
@@ -201,7 +227,7 @@ public class Weather {
       } catch (NullPointerException npe) {
         // No action needed, just leave the fields blank
       }
-    }
+    }    
     // Extracting time stamp
     this.timestamp = new Date(((Long) data.get("dt")) * 1000);
   }

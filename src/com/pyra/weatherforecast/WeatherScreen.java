@@ -1,10 +1,12 @@
 package com.pyra.weatherforecast;
 
-import com.pyra.weatherforecast.data.*;
+import com.pyra.weatherforecast.data.City;
+import com.pyra.weatherforecast.data.Forecast;
+import com.pyra.weatherforecast.data.Weather;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.util.ArrayList;
+import java.util.Date;
 import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
@@ -28,16 +30,16 @@ public class WeatherScreen extends JFrame {
       JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
   private JPanel forecastContainer = new JPanel();
   private GroupLayout lmw;
-  private GroupLayout lmf;
   // Weather panel elements
   private JLabel cityName;
   private JLabel weatherCondition;
   private JLabel weatherIcon;
   private JLabel temperature;
-  private JLabel temperatureLo;
-  private JLabel temperatureHi;
   private JLabel pressure;
   private JLabel humidity;
+  private JLabel lefttime;
+  private JLabel righttime;
+  private JLabel middletime;
   private JLabel wind;
   
   public WeatherScreen(City city) {
@@ -68,11 +70,12 @@ public class WeatherScreen extends JFrame {
     weatherIcon = new JLabel();
     cityName = new JLabel(cityWeather.getCity().getName());
     temperature = new JLabel();
-    temperatureLo = new JLabel();
-    temperatureHi = new JLabel();
     pressure = new JLabel();
     humidity = new JLabel();
     wind = new JLabel();
+    lefttime = new JLabel();
+    righttime = new JLabel();
+    middletime = new JLabel();
     
     // Refresh each tab
     setupWeatherTab();
@@ -92,44 +95,58 @@ public class WeatherScreen extends JFrame {
     lmw.setHorizontalGroup(
         lmw.createSequentialGroup()
           .addGroup(lmw.createParallelGroup(GroupLayout.Alignment.LEADING)
-              .addComponent(weatherCondition)
-              .addComponent(cityName)
               .addGroup(lmw.createSequentialGroup()
-                  .addComponent(temperatureLo)
+                  .addGroup(lmw.createParallelGroup(GroupLayout.Alignment.LEADING)
+                      .addComponent(weatherCondition)
+                      .addComponent(temperature)
+                  )
                   .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED,
                       GroupLayout.PREFERRED_SIZE,Short.MAX_VALUE)
-                  .addComponent(temperature)
-                  .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED,
-                      GroupLayout.PREFERRED_SIZE,Short.MAX_VALUE)
-                  .addComponent(temperatureHi)
-               )
+                  .addComponent(weatherIcon)
+              )
               .addGroup(lmw.createSequentialGroup()
                   .addComponent(pressure)
+                  .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED,
+                      GroupLayout.PREFERRED_SIZE,Short.MAX_VALUE)
                   .addComponent(humidity)
               )
               .addComponent(wind)
+              .addGroup(lmw.createSequentialGroup()
+                  .addComponent(lefttime)
+                  .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED,
+                      GroupLayout.PREFERRED_SIZE,Short.MAX_VALUE)
+                  .addComponent(righttime)
+              )
+              .addGroup(lmw.createSequentialGroup()
+                  .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED,
+                      GroupLayout.PREFERRED_SIZE,Short.MAX_VALUE)
+                  .addComponent(middletime)
+                  .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED,
+                      GroupLayout.PREFERRED_SIZE,Short.MAX_VALUE)
+
+              )
           )
-          .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED,
-              GroupLayout.PREFERRED_SIZE,Short.MAX_VALUE)
-          .addComponent(weatherIcon)
+          
     );
     lmw.setVerticalGroup(
         lmw.createSequentialGroup()
           .addGroup(lmw.createParallelGroup(GroupLayout.Alignment.BASELINE)
-              .addComponent(weatherCondition)
+              .addGroup(lmw.createSequentialGroup()
+                  .addComponent(weatherCondition)                  
+                  .addComponent(temperature)
+              )
               .addComponent(weatherIcon)
-          )
-          .addComponent(cityName)
-          .addGroup(lmw.createParallelGroup(GroupLayout.Alignment.BASELINE)
-              .addComponent(temperatureLo)
-              .addComponent(temperature)
-              .addComponent(temperatureHi)
           )
           .addGroup(lmw.createParallelGroup(GroupLayout.Alignment.BASELINE)
               .addComponent(pressure)
               .addComponent(humidity)
           )
           .addComponent(wind)
+          .addGroup(lmw.createParallelGroup(GroupLayout.Alignment.BASELINE)
+              .addComponent(lefttime)
+              .addComponent(righttime)
+          )
+          .addComponent(middletime)
           
     );
     weatherTab.revalidate();
@@ -138,9 +155,7 @@ public class WeatherScreen extends JFrame {
   
   private void clearWeatherTab() {
     weatherCondition.setText("");
-    temperatureLo.setText("");
     temperature.setText("");
-    temperatureHi.setText("");
     pressure.setText("");
     humidity.setText("");
     wind.setText("");
@@ -150,9 +165,7 @@ public class WeatherScreen extends JFrame {
   
   private void refreshWeatherTab() {
     weatherCondition.setText(Weather.weatherCodeToString(cityWeather));
-    temperatureLo.setText("Low : " + cityWeather.getTempMin() + " K");
     temperature.setText(cityWeather.getTemp() + " K");
-    temperatureHi.setText("High : " + cityWeather.getTempMax() + " K");
     pressure.setText("Pressure : " + cityWeather.getPressure() + " hPa");
     humidity.setText("Humidity : " + cityWeather.getHumidity() + "%");
     wind.setText("Wind : " + cityWeather.getWindSpeed() + " m/s");
@@ -161,6 +174,17 @@ public class WeatherScreen extends JFrame {
     }
     if (cityWeather.getWeatherIcon() != null) {
       weatherIcon.setIcon(new ImageIcon(cityWeather.getWeatherIcon()));      
+    }
+    if (cityWeather.getSunrise() != null && cityWeather.getSunset() != null) {
+      lefttime.setText("Sunrise : " + cityWeather.getSunrise().toString());
+      righttime.setText("Sunset : " + cityWeather.getSunset().toString());
+      Date currenttime = new Date();
+      if (getTimeDifference(currenttime,cityWeather.getSunrise()) > 0 
+          && getTimeDifference(cityWeather.getSunset(),currenttime) > 0) {
+        middletime.setText("Day");
+      } else {
+        middletime.setText("Night");
+      }
     }
     weatherTab.revalidate();
     weatherTab.repaint();
@@ -212,6 +236,22 @@ public class WeatherScreen extends JFrame {
     }
   }
  
+  private long getTimeDifference(Date first, Date second) {
+    return (first.getTime() - second.getTime()) / 1000;
+  }
+  
+  /*
+  private String printTimeDifference(long diff) {
+    String hours = " h ";
+    String minutes = " m ";
+    String seconds = " s";
+    
+    hours = (diff / 3600) + hours;
+    minutes = ((diff % 3600) / 60) + minutes;
+    seconds = (diff % 60) + seconds;
+    return (hours + minutes + seconds);
+  }
+  */
 
   private class ForecastElement extends JPanel {
     

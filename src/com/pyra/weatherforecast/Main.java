@@ -1,12 +1,11 @@
 package com.pyra.weatherforecast;
 
 import com.pyra.weatherforecast.data.City;
-import com.pyra.weatherforecast.data.Forecast;
-import com.pyra.weatherforecast.data.Weather;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -44,6 +43,14 @@ public class Main extends JFrame {
     searchQuery = new JTextField(20);
     searchQuery.setBounds(5,5,228,25);
     searchQuery.setToolTipText("Insert search query here...");
+    // Execute the search on enter keypress
+    searchQuery.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent ae) {
+        doSearch();
+      }
+      
+    });
     contents.add(searchQuery);
     
     // The search button
@@ -108,7 +115,12 @@ public class Main extends JFrame {
           }
         });
       }
-      if (searchResultView.size() == 0) {
+      if (searcher.getStatusCode() != 0) {
+        searchResultView.add(new ResultElement(
+            new City("","There's something wrong while loading city database."
+                + "Search cannot be performed.")));
+        searchResultContainer.add(searchResultView.get(searchResultView.size() - 1));
+      } else if (searchResultView.size() == 0) {
         searchResultView.add(new ResultElement(
             new City("","Cannot found " + searchQuery.getText())));
         searchResultContainer.add(searchResultView.get(searchResultView.size() - 1));

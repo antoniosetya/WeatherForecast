@@ -21,25 +21,20 @@ public class CitySearcher {
   
   private CitySearcher() {
     JSONParser parser = new JSONParser();
-    System.out.println("Loading file...");
     try {
       dataBuffer = (JSONArray) parser.parse(new FileReader("./city.list.min.json"));
       statusCode = 0;
     } catch (FileNotFoundException fnfe) {
-      System.out.println("Cannot find city data(base)!");
       statusCode = 1;
     } catch (IOException ie) {
-      System.out.println("Failed to read city data(base)!");
       statusCode = 999;
     } catch (ParseException pe) {
-      System.out.println("City data(base) is corrupted!");
       statusCode = 2;
     } finally {
       if (statusCode != 0) {
         dataBuffer = new JSONArray();
       }
     }
-    System.out.println("File loaded.");
   } 
   
   public static CitySearcher getSearcher() {
@@ -67,12 +62,7 @@ public class CitySearcher {
   }
   
   public void search() {
-    if (statusCode != 0) {
-      System.out.println("City data(base) is not loaded properly!");
-    } else if (searchQuery == null || searchQuery.isEmpty()) {
-      System.out.println("No search query");
-    } else {
-      System.out.println("Starting search of " + searchQuery);
+    if (statusCode == 0 && !(searchQuery == null || searchQuery.isEmpty())) {
       isRunning = true;
       if (!resultBuffer.isEmpty()) {
         resultBuffer.clear();
@@ -93,7 +83,6 @@ public class CitySearcher {
         }
       }
       isRunning = false;
-      System.out.println("Search finished");
     }
   }
   
