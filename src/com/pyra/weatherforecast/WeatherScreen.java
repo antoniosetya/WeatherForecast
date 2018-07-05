@@ -6,12 +6,17 @@ import com.pyra.weatherforecast.data.Weather;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Date;
 import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -22,6 +27,7 @@ public class WeatherScreen extends JFrame {
   // Data
   private Weather cityWeather;
   private Forecast cityForecast;
+  private int unitChoice = 0; // 0 for Metric, 1 for Imperial
   
   // Top-level container
   private JTabbedPane parentTab = new JTabbedPane();
@@ -29,8 +35,9 @@ public class WeatherScreen extends JFrame {
   private JScrollPane forecastTab = new JScrollPane(
       JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
   private JPanel forecastContainer = new JPanel();
-  private GroupLayout lmw;
+  private JMenuBar menubar;
   // Weather panel elements
+  private GroupLayout lmw;
   private JLabel cityName;
   private JLabel weatherCondition;
   private JLabel weatherIcon;
@@ -45,7 +52,7 @@ public class WeatherScreen extends JFrame {
   public WeatherScreen(City city) {
     // Setting initial window settings
     setBackground(Color.WHITE);
-    setMinimumSize(new Dimension(500,500));
+    setMinimumSize(new Dimension(500,400));
     setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     setVisible(true);
     
@@ -57,7 +64,33 @@ public class WeatherScreen extends JFrame {
     // Set city name as this window title
     this.setTitle("Loading...");
     
-    // Setting up GUI elements
+    // Setting up GUI elements of this window
+    menubar = new JMenuBar();
+    JMenu units = new JMenu("Units");
+    JMenuItem unitMetric = new JMenuItem("Metric (\u00b0C, m/s, kPa)");
+    unitMetric.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent ae) {
+        unitChoice = 0;
+        refreshAllThreaded();
+      }
+    });
+    
+    JMenuItem unitImperial = new JMenuItem("Imperial (\u00b0F, ft/s, psi)");
+    unitImperial.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent ae) {
+        unitChoice = 1;
+        refreshAllThreaded();
+      }
+    });
+    
+    units.add(unitMetric);
+    units.add(unitImperial);
+    menubar.add(units);
+    this.setJMenuBar(menubar);
+    
+    // Setting up GUI elements of tabs and weather tab
     lmw = new GroupLayout(weatherTab);
     weatherTab.setLayout(lmw);
     parentTab.addTab("Weather", weatherTab);
@@ -79,13 +112,28 @@ public class WeatherScreen extends JFrame {
     
     // Refresh each tab
     setupWeatherTab();
+    refreshWeatherTab();
     refreshForecastTab();
+    parentTab.revalidate();
+    parentTab.repaint();
     
     // Grabs weather data
-    refreshWeather();
+    Thread weatherThread = new Thread(new Runnable() {
+      public void run() {
+        refreshWeather();        
+      }
+    });
     // Grabs forecast data
-    refreshForecast();
+    Thread forecastThread = new Thread(new Runnable() {
+      public void run() {
+        refreshForecast();        
+      }
+    });
+    weatherThread.start();
+    forecastThread.start();
     
+    // this needs optimization, as it exerts long busy waiting
+    while (weatherThread.isAlive() && forecastThread.isAlive()) {}
     this.setTitle(cityWeather.getCity().getName());
   }
   
@@ -98,6 +146,7 @@ public class WeatherScreen extends JFrame {
               .addGroup(lmw.createSequentialGroup()
                   .addGroup(lmw.createParallelGroup(GroupLayout.Alignment.LEADING)
                       .addComponent(weatherCondition)
+                      .addComponent(cityName)
                       .addComponent(temperature)
                   )
                   .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED,
@@ -132,7 +181,8 @@ public class WeatherScreen extends JFrame {
         lmw.createSequentialGroup()
           .addGroup(lmw.createParallelGroup(GroupLayout.Alignment.BASELINE)
               .addGroup(lmw.createSequentialGroup()
-                  .addComponent(weatherCondition)                  
+                  .addComponent(weatherCondition)    
+                  .addComponent(cityName)
                   .addComponent(temperature)
               )
               .addComponent(weatherIcon)
@@ -164,13 +214,34 @@ public class WeatherScreen extends JFrame {
   }
   
   private void refreshWeatherTab() {
+    double tempVal;
+    double pressureVal;
+    double windSpeedVal;
+    String tempUnit;
+    String pressureUnit;
+    String windSpeedUnit;
+    if (unitChoice == 0) {
+      tempVal = cityWeather.getTemp() - 273.15;
+      tempUnit = "\u00b0C";
+      pressureVal = cityWeather.getPressure() * 0.1;
+      pressureUnit = "kPa";
+      windSpeedVal = cityWeather.getWindSpeed();
+      windSpeedUnit = "m/s";
+    } else { // unitChoice == 1
+      tempVal = (cityWeather.getTemp() * (9 / (double) 5)) - 459.67;
+      tempUnit = "\u00b0F";
+      pressureVal = cityWeather.getPressure() * 0.014503773773;
+      pressureUnit = "psi";
+      windSpeedVal = cityWeather.getWindSpeed() * 3.28084;
+      windSpeedUnit = "ft/s";
+    }
     weatherCondition.setText(Weather.weatherCodeToString(cityWeather));
-    temperature.setText(cityWeather.getTemp() + " K");
-    pressure.setText("Pressure : " + cityWeather.getPressure() + " hPa");
+    temperature.setText(tempVal + " " + tempUnit);
+    pressure.setText("Pressure : " + pressureVal + " " + pressureUnit);
     humidity.setText("Humidity : " + cityWeather.getHumidity() + "%");
-    wind.setText("Wind : " + cityWeather.getWindSpeed() + " m/s");
+    wind.setText("Wind : " + windSpeedVal + " " + windSpeedUnit);
     if (cityWeather.getWindHeading() >= 0) {
-      wind.setText(wind.getText() + " (" + cityWeather.getWindHeading() + " deg.)");
+      wind.setText(wind.getText() + " (" + cityWeather.getWindHeading() + "\u00b0.)");
     }
     if (cityWeather.getWeatherIcon() != null) {
       weatherIcon.setIcon(new ImageIcon(cityWeather.getWeatherIcon()));      
@@ -193,13 +264,16 @@ public class WeatherScreen extends JFrame {
   private void refreshForecastTab() {
     clearForecastTab();
     if (cityForecast.getForecast().size() <= 0) {
-      JLabel temp = new JLabel("Forecast data not available");
+      JLabel temp;
+      if (this.getTitle() == "Loading...") {
+        temp = new JLabel("Forecast data is still loading...");
+      } else {
+        temp = new JLabel("Forecast data not available");
+      }
       forecastContainer.add(temp);
-      forecastContainer.revalidate();
-      forecastContainer.repaint();
     } else {
       for (Weather elm : cityForecast.getForecast()) {
-        forecastContainer.add(new ForecastElement(elm));
+        forecastContainer.add(new ForecastElement(elm, unitChoice));
       }
     }
     forecastContainer.revalidate();
@@ -211,8 +285,24 @@ public class WeatherScreen extends JFrame {
     forecastContainer.revalidate();
     forecastContainer.repaint();
   }
+    
+  private void refreshAllThreaded() {
+    Thread wthread = new Thread(new Runnable() {
+      public void run() {
+        refreshWeather();            
+      }
+    });
+    Thread fthread = new Thread(new Runnable() {
+      public void run() {
+        refreshForecast();            
+      }
+    });
+    wthread.start();
+    fthread.start();
+  }
   
   public void refreshWeather() {
+    this.setTitle("Loading...");
     WeatherGrabber wg = new WeatherGrabber(cityWeather.getCity().getId());
     wg.grabWeather(cityWeather);
     if (wg.getStatus() == 200) {
@@ -224,9 +314,11 @@ public class WeatherScreen extends JFrame {
       weatherTab.revalidate();
       weatherTab.repaint();
     }
+    this.setTitle(cityWeather.getCity().getName());
   }
   
   public void refreshForecast() {
+    this.setTitle("Loading...");
     WeatherGrabber wg = new WeatherGrabber(cityForecast.getCity().getId());
     wg.grabForecast(cityForecast);
     if (wg.getStatus() == 200) {
@@ -234,6 +326,7 @@ public class WeatherScreen extends JFrame {
     } else {
       clearForecastTab();
     }
+    this.setTitle(cityWeather.getCity().getName());
   }
  
   private long getTimeDifference(Date first, Date second) {
@@ -260,7 +353,7 @@ public class WeatherScreen extends JFrame {
     private JLabel weatherIcon;
     private JLabel temperature;
     
-    public ForecastElement(Weather in) {
+    public ForecastElement(Weather in, int unitChoice) {
       setPreferredSize(new Dimension(326,70));
       setBorder(BorderFactory.createLineBorder(Color.BLACK));
       // Time label
@@ -268,7 +361,11 @@ public class WeatherScreen extends JFrame {
       // Forecasted weather label
       weatherCondition = new JLabel(Weather.weatherCodeToString(in));
       // Temperature label
-      temperature = new JLabel(in.getTemp() + " K");
+      if (unitChoice == 0) {
+        temperature = new JLabel(cityWeather.getTemp() - 273.15 + " \u00b0C");        
+      } else {
+        temperature = new JLabel(((cityWeather.getTemp() * (9 / (double) 5)) - 459.67) + " \u00b0F");
+      }
       // Icon
       weatherIcon = new JLabel();
       if (in.getWeatherIcon() != null) {
