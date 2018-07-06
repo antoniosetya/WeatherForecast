@@ -25,20 +25,41 @@ public class WeatherGrabber {
   private HashMap<String,Image> weatherIconCache;
   private JSONObject data;
     
+  /**The main constructor of WeatherGrabber.
+   * 
+   * @param cityId : the ID of a city whose data will be retrieved.
+   */
   public WeatherGrabber(final String cityId) {
     this.cityId = cityId;
     this.weatherIconCache = new HashMap<String,Image>();
     resetStatus();
   }
 
+  /**Returns the city ID of this WeatherGrabber.
+   * 
+   * @return the ID of the city whose data will be retrieved.
+   */
   public String getCityId() {
     return cityId;
   }
   
+  /**Returns the status of this WeatherGrabber.
+   * Be aware that this may return null when either 
+   * grabWeather or grabForecast hasn't been invoked yet.
+   * Any negative values means that there's an internal error occured.
+   * Other values represent HTTP status codes received from the (OpenWeather) server.
+   * 
+   * @return the status code of this WeatherGrabber.
+   */
   public int getStatus() {
     return status;
   }
 
+  
+  /**Sets the city ID whose data will be retrieved by this WeatherGrabber.
+   * 
+   * @param cityId : the city ID
+   */
   public void setCityId(String cityId) {
     this.cityId = cityId;
   }
@@ -72,6 +93,10 @@ public class WeatherGrabber {
     }
   }
   
+  /**Grabs weather data from (OpenWeather) server and placed it in "in".
+   * 
+   * @param in : the Weather variable where the data from server will be stored in.
+   */
   public void grabWeather(Weather in) {
     // Opening & requesting data to OpenWeather
     makeRequest('w');
@@ -108,6 +133,10 @@ public class WeatherGrabber {
     }
   }
   
+  /**Grabs forecast data from (OpenWeather) server and placed it in "in".
+   * 
+   * @param in : the Forecast variable where the data from server will be stored in.
+   */
   public void grabForecast(Forecast in) {
     // Opening & requesting data to OpenWeather
     makeRequest('f');

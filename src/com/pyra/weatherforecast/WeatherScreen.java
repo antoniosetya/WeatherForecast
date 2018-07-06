@@ -24,10 +24,12 @@ import javax.swing.LayoutStyle;
 
 public class WeatherScreen extends JFrame {
   
+  private static final long serialVersionUID = 5171748256390903168L;
   // Data
   private Weather cityWeather;
   private Forecast cityForecast;
   private int unitChoice = 0; // 0 for Metric, 1 for Imperial
+  private final String degree = Character.toString((char) 0x00b0);
   
   // Top-level container
   private JTabbedPane parentTab = new JTabbedPane();
@@ -49,6 +51,11 @@ public class WeatherScreen extends JFrame {
   private JLabel middletime;
   private JLabel wind;
   
+  
+  /**The main constructor for WeatherScreen.
+   * 
+   * @param city is the city displayed by this WeatherScreen
+   */
   public WeatherScreen(City city) {
     // Setting initial window settings
     setBackground(Color.WHITE);
@@ -67,7 +74,7 @@ public class WeatherScreen extends JFrame {
     // Setting up GUI elements of this window
     menubar = new JMenuBar();
     JMenu units = new JMenu("Units");
-    JMenuItem unitMetric = new JMenuItem("Metric (\u00b0C, m/s, kPa)");
+    JMenuItem unitMetric = new JMenuItem("Metric (" + degree + "C, m/s, kPa)");
     unitMetric.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent ae) {
@@ -76,7 +83,7 @@ public class WeatherScreen extends JFrame {
       }
     });
     
-    JMenuItem unitImperial = new JMenuItem("Imperial (\u00b0F, ft/s, psi)");
+    JMenuItem unitImperial = new JMenuItem("Imperial (" + degree + "F, ft/s, psi)");
     unitImperial.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent ae) {
@@ -220,39 +227,48 @@ public class WeatherScreen extends JFrame {
     String tempUnit;
     String pressureUnit;
     String windSpeedUnit;
+    // Calculating/converting units
     if (unitChoice == 0) {
       tempVal = cityWeather.getTemp() - 273.15;
-      tempUnit = "\u00b0C";
+      tempUnit = degree + "C";
       pressureVal = cityWeather.getPressure() * 0.1;
       pressureUnit = "kPa";
       windSpeedVal = cityWeather.getWindSpeed();
       windSpeedUnit = "m/s";
     } else { // unitChoice == 1
       tempVal = (cityWeather.getTemp() * (9 / (double) 5)) - 459.67;
-      tempUnit = "\u00b0F";
+      tempUnit = degree + "F";
       pressureVal = cityWeather.getPressure() * 0.014503773773;
       pressureUnit = "psi";
       windSpeedVal = cityWeather.getWindSpeed() * 3.28084;
       windSpeedUnit = "ft/s";
     }
+    // Setting labels
     weatherCondition.setText(Weather.weatherCodeToString(cityWeather));
+    cityName.setText(cityWeather.getCity().getName() + ", " + cityWeather.getCity().getCountry());
     temperature.setText(tempVal + " " + tempUnit);
     pressure.setText("Pressure : " + pressureVal + " " + pressureUnit);
     humidity.setText("Humidity : " + cityWeather.getHumidity() + "%");
     wind.setText("Wind : " + windSpeedVal + " " + windSpeedUnit);
+    // If wind data is collected, show it
     if (cityWeather.getWindHeading() >= 0) {
-      wind.setText(wind.getText() + " (" + cityWeather.getWindHeading() + "\u00b0.)");
+      wind.setText(wind.getText() + " (" + cityWeather.getWindHeading() + degree + ")");
     }
+    // If weather icon is successfully retrieved, show it
     if (cityWeather.getWeatherIcon() != null) {
       weatherIcon.setIcon(new ImageIcon(cityWeather.getWeatherIcon()));      
     }
+    // If sunrise & sunset data is retrieved. show it
     if (cityWeather.getSunrise() != null && cityWeather.getSunset() != null) {
       lefttime.setText("Sunrise : " + cityWeather.getSunrise().toString());
       righttime.setText("Sunset : " + cityWeather.getSunset().toString());
       Date currenttime = new Date();
+      // Determining whether now is daytime or nighttime and shows it.
+      // If daytime, also shows remaining time of day.
       if (getTimeDifference(currenttime,cityWeather.getSunrise()) > 0 
           && getTimeDifference(cityWeather.getSunset(),currenttime) > 0) {
-        middletime.setText("Day");
+        middletime.setText("Day. Remaining daylight : " 
+            + printTimeDifference(getTimeDifference(cityWeather.getSunset(), new Date())));
       } else {
         middletime.setText("Night");
       }
@@ -301,7 +317,7 @@ public class WeatherScreen extends JFrame {
     fthread.start();
   }
   
-  public void refreshWeather() {
+  private void refreshWeather() {
     this.setTitle("Loading...");
     WeatherGrabber wg = new WeatherGrabber(cityWeather.getCity().getId());
     wg.grabWeather(cityWeather);
@@ -314,10 +330,10 @@ public class WeatherScreen extends JFrame {
       weatherTab.revalidate();
       weatherTab.repaint();
     }
-    this.setTitle(cityWeather.getCity().getName());
+    this.setTitle(cityWeather.getCity().getName() + ", "  + cityWeather.getCity().getCountry());
   }
   
-  public void refreshForecast() {
+  private void refreshForecast() {
     this.setTitle("Loading...");
     WeatherGrabber wg = new WeatherGrabber(cityForecast.getCity().getId());
     wg.grabForecast(cityForecast);
@@ -326,14 +342,13 @@ public class WeatherScreen extends JFrame {
     } else {
       clearForecastTab();
     }
-    this.setTitle(cityWeather.getCity().getName());
+    this.setTitle(cityWeather.getCity().getName() + ", " + cityWeather.getCity().getCountry());
   }
  
   private long getTimeDifference(Date first, Date second) {
     return (first.getTime() - second.getTime()) / 1000;
   }
   
-  /*
   private String printTimeDifference(long diff) {
     String hours = " h ";
     String minutes = " m ";
@@ -344,10 +359,10 @@ public class WeatherScreen extends JFrame {
     seconds = (diff % 60) + seconds;
     return (hours + minutes + seconds);
   }
-  */
 
   private class ForecastElement extends JPanel {
     
+    private static final long serialVersionUID = 3777979755900617018L;
     private JLabel time;
     private JLabel weatherCondition;
     private JLabel weatherIcon;
@@ -362,9 +377,10 @@ public class WeatherScreen extends JFrame {
       weatherCondition = new JLabel(Weather.weatherCodeToString(in));
       // Temperature label
       if (unitChoice == 0) {
-        temperature = new JLabel(cityWeather.getTemp() - 273.15 + " \u00b0C");        
+        temperature = new JLabel(cityWeather.getTemp() - 273.15 + " " + degree + "C");        
       } else {
-        temperature = new JLabel(((cityWeather.getTemp() * (9 / (double) 5)) - 459.67) + " \u00b0F");
+        temperature = new JLabel(((cityWeather.getTemp() * (9 / (double) 5)) - 459.67) 
+            + " " + degree + "F");
       }
       // Icon
       weatherIcon = new JLabel();

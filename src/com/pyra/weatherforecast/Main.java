@@ -21,6 +21,7 @@ import javax.swing.SwingUtilities;
 
 public class Main extends JFrame {
 
+  private static final long serialVersionUID = 2504100948045362609L;
   private JPanel contents;
   private JPanel searchResultContainer;
   private JScrollPane scrollableResultContainer;
@@ -30,6 +31,9 @@ public class Main extends JFrame {
   private JButton searchButton;
   private CitySearcher searcher;
   
+  /**The Main constructor.
+   * It will initialize the search window.
+   */
   public Main() {
     // Setting up initial content
     contents = new JPanel();
@@ -132,6 +136,7 @@ public class Main extends JFrame {
   
   private class ResultElement extends JPanel {
     
+    private static final long serialVersionUID = -8748314195373864376L;
     private JLabel cityName;
     private JLabel pos;
     private City city;
@@ -141,7 +146,7 @@ public class Main extends JFrame {
       setPreferredSize(new Dimension(326,70));
       setBorder(BorderFactory.createLineBorder(Color.BLACK));
       // Label for city name
-      cityName = new JLabel(in.getName());
+      cityName = new JLabel(in.getName() + ", " + in.getCountry());
       // Label for latitude
       pos = new JLabel("Coordinate : " + in.getLat() + "," + in.getLon());
       // Layout manager

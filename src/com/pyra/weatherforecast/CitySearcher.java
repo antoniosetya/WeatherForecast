@@ -37,30 +37,64 @@ public class CitySearcher {
     }
   } 
   
+  
+  /**Getter for the CitySearcher object.
+   * The CitySearcher is a singleton object.
+   * To use this object, get the object by this method.
+   * 
+   * @return the CitySearcher object.
+   */
   public static CitySearcher getSearcher() {
     return searcher;
   }
   
+  
+  /**Returns the search results. 
+   * If method search() isn't invoked yet, it will returns an empty list.
+   * @return the results in ArrayList of City.
+   */
   public ArrayList<City> getResult() {
     return resultBuffer;
   }
   
+  /**Returns the search query that has been set.
+   * @return the placed search query.
+   */
   public String getSearchQuery() {
     return searchQuery;
   }
   
+  /**Sets the search query for the searcher.
+   * @param searchQuery : the desired search query
+   */
   public void setSearchQuery(String searchQuery) {
     this.searchQuery = searchQuery.toLowerCase();
   }
 
+  /**Returns true if searcher is currently searching, false if not.
+   * 
+   * @return true/false
+   */
   public boolean isRunning() {
     return isRunning;
   }
 
+  /**Returns the status of this searcher.
+   * Code 0 means it's all fine.
+   * Code 1 means that the city database (file city.list.min.json) cannot be found.
+   * Code 2 and 999 means that there's an error while reading the city database.
+   * 
+   * @return the status code
+   */
   public int getStatusCode() {
     return statusCode;
   }
   
+  /**Fires the search.
+   * Make sure the query is already set by invoking setSearchQuery("yoursearchquery"),
+   * and the city database is properly loaded (the status code is 0). 
+   * Grab the results with getResult().
+   */
   public void search() {
     if (statusCode == 0 && !(searchQuery == null || searchQuery.isEmpty())) {
       isRunning = true;
@@ -86,6 +120,9 @@ public class CitySearcher {
     }
   }
   
+  /**Stops the searcher if the searcher is running.
+   * 
+   */
   public void stopSearch() {
     isRunning = false;
   }

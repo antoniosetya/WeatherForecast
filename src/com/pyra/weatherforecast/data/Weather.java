@@ -30,6 +30,8 @@ public class Weather {
   // When this data is taken. Time in UTC
   private Date timestamp;
   
+  /**The default/main constructor of Weather.
+   */
   public Weather() {
     city = new City();
     weatherId = 800;
@@ -43,6 +45,11 @@ public class Weather {
     timestamp = new Date();
   }
   
+  /**Alternate constructor for Weather.
+   * 
+   * @param city : the City whose weather data is being represented by this Weather. 
+   * @param timestamp : java.util.Date, representing when the data in this Weather is taken.
+   */
   public Weather(City city, Date timestamp) {
     this.city = city;
     weatherId = 800;
@@ -56,6 +63,11 @@ public class Weather {
     this.timestamp = timestamp;
   }
   
+  /**Alternate constructor for Weather.
+   * 
+   * @param city : the City whose weather data is being represented by this Weather. 
+   * @param timestamp : when the data in this Weather is taken, in "epoch" time.
+   */
   public Weather(City city, long timestamp) {
     this.city = city;
     weatherId = 800;
@@ -69,115 +81,230 @@ public class Weather {
     this.timestamp = new Date(timestamp);
   }
 
+  /**Alternate constructor for Weather.
+   * 
+   * @param data : a JSONObject data that represents JSON taken from OpenWeather server.
+   *               See json-simple library for details. 
+   */
   public Weather(JSONObject data) {
     this.fillFromJson(data);
   }
   
+  /**Returns the location of this Weather.
+   * 
+   * @return a City representation of the location of this Weather.
+   */
   public City getCity() {
     return city;
   }
   
+  /**Returns an image that represents current weather condition.
+   * 
+   * @return java.awt.Image 
+   */
   public Image getWeatherIcon() {
     return weatherIcon;
   }
   
+  
+  /**Returns a code that represents current weather condition.
+   * To see what it means, either look at the static method weatherCodeToString, or
+   * consult the OpenWeather API. 
+   * 
+   * @return an integer which is the code.
+   */
   public int getWeatherId() {
     return weatherId;
   }
   
 
+  /**Returns the temperature measured (in Kelvin).
+   * 
+   * @return a double which is the temperature.
+   */
   public double getTemp() {
     return temp;
   }
   
 
+  /**Returns the minimum temperature measured in a day (in Kelvin).
+   * 
+   * @return a double which is the minimum temperature
+   */
   public double getTempMin() {
     return tempMin;
   }
   
-
+  /**Returns the maximum temperature measured in a day (in Kelvin).
+   * 
+   * @return a double which is the maximum temperature
+   */
   public double getTempMax() {
     return tempMax;
   }
   
-
+  /**Returns the pressure measured (in hPa, hectopascal).
+   * 
+   * @return a double which is the pressure
+   */
   public double getPressure() {
     return pressure;
   }
   
 
+  /**Returns the humidity measured (in %).
+   * 
+   * @return a long which is the humidity
+   */
   public long getHumidity() {
     return humidity;
   }
   
 
+  /**Returns the wind speed measured (in m/s).
+   * 
+   * @return a double which is the wind speed.
+   */
   public double getWindSpeed() {
     return windSpeed;
   }
   
 
+  /**Returns where the wind is heading (in degrees).
+   * 
+   * @return a double which is the wind heading.
+   */
   public double getWindHeading() {
     return windHeading;
   }
 
+  /**Returns the time of sunrise today in that location.
+   * 
+   * @return a java.util.Date which is the sunrise time.
+   */
   public Date getSunrise() {
     return sunrise;
   }
   
+  /**Returns the time of sunset today in that location.
+   * 
+   * @return a java.util.Date which is the sunset time.
+   */
   public Date getSunset() {
     return sunset;
   }
 
+  
+  /**Returns the time this data is taken.
+   * 
+   * @return a java.util.Date which is when this data is taken.
+   */
   public Date getTimestamp() {
     return timestamp;
   }
 
+  /**Sets the City.
+   * 
+   * @param city represents location of this Weather.
+   */
   public void setCity(City city) {
     this.city = city;
   }
   
+  /**Sets the code that represents current weather conditions.
+   * 
+   * @param weatherId is the code.
+   */
   public void setWeatherId(int weatherId) {
     this.weatherId = weatherId;
   }
   
+  /**Sets the image that represents current weather conditions.
+   * 
+   * @param weatherIcon is the image, anything that extends Image is accepted
+   */
   public <T extends Image> void setWeatherIcon(T weatherIcon) {
     this.weatherIcon = weatherIcon;
   }
   
+  
+  /**Sets the temperature. Temperatures are in Kelvin.
+   * Just make sure that tempMin < temp < tempMax, this thing doesn't do that...
+   * 
+   * @param temp is the current temperature
+   * @param tempMin is the minimum temperature recorded
+   * @param tempMax is the maximum temperature recorded
+   */
   public void setTempAndMaxMin(double temp, double tempMin, double tempMax) {
     this.temp = temp;
     this.tempMin = tempMin;
     this.tempMax = tempMax;
   }
 
+  /**Sets the pressure. Pressure is in hPa (hectopascal).
+   * 
+   * @param pressure is the current pressure recorded
+   */
   public void setPressure(long pressure) {
     this.pressure = pressure;
   }
 
+  /**Sets the humidity. Humidity is in %.
+   * 
+   * @param humidity is the current humidity recorded
+   */
   public void setHumidity(long humidity) {
     this.humidity = humidity;
   }
 
+  /**Sets the wind speed. Wind speed in m/s.
+   * 
+   * @param windSpeed is the current wind speed recorded
+   */
   public void setWindSpeed(double windSpeed) {
     this.windSpeed = windSpeed;
   }
 
+  /**Sets the wind heading/direction. Wind heading in degrees.
+   * 
+   * @param windHeading is the current wind direction recorded
+   */
   public void setWindHeading(double windHeading) {
     this.windHeading = windHeading;
   }
 
+  /**Sets the sunrise time. See documentation of java.util.Date for details of Date.
+   * 
+   * @param sunrise is today sunrise time, in java.util.Date
+   */
   public void setSunrise(Date sunrise) {
     this.sunrise = sunrise;
   }
   
+  /**Sets the sunset time. See documentation of java.util.Date for details of Date.
+   * 
+   * @param sunset is today sunset time, in java.util.Date
+   */
   public void setSunset(Date sunset) {
     this.sunset = sunset;
   }
   
+  /**Sets the time when this data is taken. See documentation of java.util.Date for details of Date.
+   * 
+   * @param timestamp is the time, in java.util.Date
+   */
   public void setTimestamp(Date timestamp) {
     this.timestamp = timestamp;
   }
   
+  
+  /**Fills this Weather's fields from a JSON representation of data.
+   * JSON format follows the format from OpenWeather servers, then converted
+   * into a JSONObject. See json-simple documentation for more info on JSONObject.
+   * If any of the fields is missing form the JSON data, the fields will be left blank.
+   * 
+   * @param data is the JSON data
+   */
   public void fillFromJson(JSONObject data) {
     // Extracting city details
     JSONObject sys = (JSONObject) data.get("sys");
@@ -195,8 +322,8 @@ public class Weather {
     }
     // Extracting sunrise and sunset time
     try {
-      this.sunrise = new Date(((Number) sys.get("sunrise")).longValue() * 1000);
-      this.sunset = new Date(((Number) sys.get("sunset")).longValue() * 1000);
+      this.sunrise = new Date(((Long) sys.get("sunrise")) * 1000);
+      this.sunset = new Date(((Long) sys.get("sunset")) * 1000);
     } catch (NullPointerException npe) {
       // Just leave the fields blank
     }
@@ -238,6 +365,12 @@ public class Weather {
     return city + "\n" + weatherId + "\n" + additionalWeather;
   }
   
+  /**Converts the code into it's corresponding text weather conditions.
+   * Look at OpenWeather API documentation for the code list.
+   * 
+   * @param code is the code that will be converted.
+   * @return a String that is human-readable text weather conditions.
+   */
   public static String weatherCodeToString(long code) {
     // Thunderstorms group
     if (code == 200) {
@@ -365,10 +498,24 @@ public class Weather {
     }
   }
   
+  
+  /**This is another weatherCodeToString method that takes Weather instead of just the code.
+   * This method will automatically retrieves the weather code.
+   * 
+   * @param w is the Weather which the code will be read from.
+   * @return a String that is human-readable text weather conditions.
+   */
   public static String weatherCodeToString(Weather w) {
     return weatherCodeToString(w.getWeatherId());
   }
   
+  /**Converts the weather code into an image code.
+   * The image code can be consulted to the OpenWeather servers to retrieve the image that
+   * represents the weather condition.
+   * 
+   * @param w is the Weather which the code will be read from
+   * @return the image code
+   */
   public static String weatherCodeToImageCode(Weather w) {
     int leading = w.getWeatherId() / 100;
     if (leading == 2) {
