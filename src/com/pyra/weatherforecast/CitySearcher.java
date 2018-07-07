@@ -98,9 +98,7 @@ public class CitySearcher {
   public void search() {
     if (statusCode == 0 && !(searchQuery == null || searchQuery.isEmpty())) {
       isRunning = true;
-      if (!resultBuffer.isEmpty()) {
-        resultBuffer.clear();
-      }
+      resultBuffer.clear();
       for (Object obj : dataBuffer) {
         JSONObject temp = (JSONObject) obj;
         String cityName = (String) temp.get("name");

@@ -24,14 +24,25 @@ public class WeatherGrabber {
   private int status;
   private HashMap<String,Image> weatherIconCache;
   private JSONObject data;
-    
+  
+  
   /**The main constructor of WeatherGrabber.
    * 
    * @param cityId : the ID of a city whose data will be retrieved.
    */
   public WeatherGrabber(final String cityId) {
     this.cityId = cityId;
-    this.weatherIconCache = new HashMap<String,Image>();
+    resetStatus();
+  }
+  
+  /**Alternate constructor of WeatherGrabber.
+   * 
+   * @param cityId : the ID of a city whose data will be retrieved.
+   * @param weatherIconCache : a HashMap if you want to use other icon cache for this grabber.
+   */
+  public WeatherGrabber(final String cityId, HashMap<String,Image> weatherIconCache) {
+    this.cityId = cityId;
+    this.weatherIconCache = weatherIconCache;
     resetStatus();
   }
 
@@ -62,6 +73,22 @@ public class WeatherGrabber {
    */
   public void setCityId(String cityId) {
     this.cityId = cityId;
+  }
+  
+  /**Gets the cache this grabber currently using.
+   * 
+   * @return the cache, a HashMap (String -> Image)
+   */
+  public HashMap<String,Image> getWeatherIconCache() {
+    return weatherIconCache;
+  }
+  
+  
+  /**Sets this grabber to use supplied cache.
+   * @param cache : the other cache you want to share with this grabber.
+   */
+  public void setWeatherIconCache(HashMap<String, Image> cache) {
+    this.weatherIconCache = cache;
   }
   
   private void resetStatus() {
@@ -175,8 +202,12 @@ public class WeatherGrabber {
     }
   }
   
-  private void grabIcon(Weather data) {
+  private synchronized void grabIcon(Weather data) {
     String code = Weather.weatherCodeToImageCode(data);
+    // Checking whether weatherIconCache is defined or not, if not, make a new cache.
+    if (weatherIconCache == null) {
+      weatherIconCache = new HashMap<String,Image>();
+    }
     Image temp = weatherIconCache.get(code);
     if (temp == null) { // if temp is null, grab icon from server
       try {

@@ -202,7 +202,7 @@ com
   </tr>
   <tr>
     <td><i>WeatherGrabber</i></td>
-    <td><i>In Progress</i></td>
+    <td><i>Completed</i></td>
     <td><i>N/A, results are fluctuative</i></td>
     <td></td>
   </tr>
