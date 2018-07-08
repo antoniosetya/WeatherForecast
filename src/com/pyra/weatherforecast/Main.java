@@ -104,7 +104,6 @@ public class Main extends JFrame {
       public void run() {
         while (true) {
           weatherWindows.removeIf(w -> !(w.isAlive()));
-          System.out.println(weatherWindows.size());
           try {
             Thread.sleep(1000);
           } catch (InterruptedException ie) {

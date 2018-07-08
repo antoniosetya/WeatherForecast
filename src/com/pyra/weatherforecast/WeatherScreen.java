@@ -5,6 +5,7 @@ import com.pyra.weatherforecast.data.Forecast;
 import com.pyra.weatherforecast.data.Weather;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -68,6 +69,7 @@ public class WeatherScreen extends JFrame {
     this.isAlive = true;
     // Setting initial window settings
     setBackground(Color.WHITE);
+    parentTab.setBackground(Color.WHITE);
     setMinimumSize(new Dimension(500,400));
     setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     setVisible(true);
@@ -130,6 +132,7 @@ public class WeatherScreen extends JFrame {
     setupWeatherTab();
     refreshWeatherTab();
     refreshForecastTab();
+    weatherCondition.setText("Loading...");
     parentTab.revalidate();
     parentTab.repaint();
     
@@ -183,9 +186,12 @@ public class WeatherScreen extends JFrame {
   }
   
   private void setupWeatherTab() {
-    // Sets padding
+    // Sets initial settings
+    weatherTab.setBackground(Color.WHITE);
     weatherTab.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
-    // Auto creating gaps 
+    // Sets each label text size
+    weatherCondition.setFont(new Font(weatherCondition.getFont().getName(),Font.PLAIN,24));
+    // Layout manager auto creating gaps between each element 
     lmw.setAutoCreateGaps(true);
     // Setting horizontal layout
     lmw.setHorizontalGroup(
@@ -291,9 +297,9 @@ public class WeatherScreen extends JFrame {
     weatherCondition.setText(Weather.weatherCodeToString(cityWeather));
     cityName.setText(cityWeather.getCity().getName() + ", " + cityWeather.getCity().getCountry());
     temperature.setText(String.format("%.2f " + tempUnit, tempVal));
-    pressure.setText("Pressure : " + pressureVal + " " + pressureUnit);
+    pressure.setText(String.format("Pressure : %.2f " + pressureUnit,pressureVal));
     humidity.setText("Humidity : " + cityWeather.getHumidity() + "%");
-    wind.setText("Wind : " + windSpeedVal + " " + windSpeedUnit);
+    wind.setText(String.format("Wind : %.2f " + windSpeedUnit,windSpeedVal));
     
     // If wind data is collected, show it
     if (cityWeather.getWindHeading() >= 0) {
@@ -425,6 +431,7 @@ public class WeatherScreen extends JFrame {
     private JLabel temperature;
     
     public ForecastElement(Weather in, int unitChoice) {
+      setBackground(Color.WHITE);
       setPreferredSize(new Dimension(326,70));
       setBorder(BorderFactory.createLineBorder(Color.BLACK));
       // Time label

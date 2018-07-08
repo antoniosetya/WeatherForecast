@@ -27,7 +27,7 @@ Untuk mendapatkan data cuaca dari suatu kota, kita lakukan *GET request* ke
 
 ```api.openweathermap.org/data/2.5/weather?q={nama_kota}&appid={API_key}```,
 
-dengan {nama_kota} diganti dengan nama kota yang diiginkan, dan {API_key} diganti dengan *API key* yang kita dapatkan saat melakukan registrasi. Melakukan *request* dengan nama kota dapat menimbulkan ambiguitas, karena bisa saja ada dua kota dengan nama yang mirip/sama. Maka dari itu, *OpenWeather* menyarankan untuk melakukan *request* dengan ID dari kota tersebut. *Request* tersebut dapat dilakukan ke 
+dengan {nama_kota} diganti dengan nama kota yang diiginkan, dan {API_key} diganti dengan *API key* yang kita dapatkan saat melakukan registrasi. Melakukan *request* dengan nama kota dapat menimbulkan ambiguitas, karena bisa saja ada dua kota dengan nama yang mirip/sama. Maka dari itu, *OpenWeather* menyarankan untuk melakukan *request* dengan ID dari kota tersebut. *Request* tersebut dapat dilakukan ke
 
 ```api.openweathermap.org/data/2.5/weather?id={id_kota}&appid={API_key}```,
 
@@ -54,7 +54,7 @@ API dari *OpenWeather* dapat menyediakan data dalam format *JSON* atau *XML*. Da
 Beberapa *field* yang muncul dalam contoh diatas bisa saja tidak muncul pada saat kita melakukan suatu *request* untuk suatu kota. Hal tersebut dipengaruhi oleh cuaca dan data yang diperoleh oleh *OpenWeather* akan bervariasi untuk setiap kota.
 
 Untuk mendapatkan data prakiraan cuaca sampai dengan 5 hari kedepan, kita dapat melakukan *GET request* ke
- 
+
 ```api.openweathermap.org/data/2.5/forecast?id={id_kota}&appid={API_key}```,
 
 dengan contoh *response* dari *API* sebagai berikut :
@@ -140,11 +140,9 @@ Untuk lebih lengkapnya mengenai *OpenWeather API*, dapat dilihat [disini](https:
 
 ## *Package Structure*
 
-__*subject to change*__
-
 Terdapat dua package utama dalam program ini, yang dibungkus dalam package *com.pyra*, yaitu *weatherforecast* dan *weatherforecast.data*. Package "pembungkus" *com.pyra* dibuat untuk mengikuti *Google Java Code Style*.
 
-Dalam package *com.pyra.weatherforecast*, terdapat empat (4) *class* "penting", yaitu : 
+Dalam package *com.pyra.weatherforecast*, terdapat empat (4) *class* "penting", yaitu :
 - *Main* : program utama dan layar utama (menampilkan layar pencarian kota)
 - *WeatherScreen* : menampilkan cuaca sekarang dan prakiraan cuaca kota yang dipilih
 - *CitySearcher* : bertugas untuk mencari kota dari data lokal berdasarkan kata kunci/*substring* tertentu dan mengembalikan ID dari kota tersebut. ID tersebut digunakan untuk berkomunikasi dengan *OpenWeather API*
@@ -184,15 +182,15 @@ com
   <tr>
     <td rowspan="4">com.pyra.weatherforecast</td>
     <td><i>Main</i></td>
-    <td><i>In Progress</i></td>
+    <td><i>Completed</i></td>
     <td>N/A</td>
-    <td><i>Refining UI...</i></td>
+    <td></td>
   </tr>
   <tr>
     <td><i>WeatherScreen</i></td>
-    <td><i>In Progress</i></td>
+    <td><i>Completed</i></td>
     <td>N/A</td>
-    <td><i>Refining UI...</i></td>
+    <td></td>
   </tr>
   <tr>
     <td><i>CitySearcher</i></td>
@@ -228,15 +226,15 @@ com
   <tr>
     <td><i>Others</i></td>
     <td><i>JDepend result</i></td>
+    <td><i>Generated</i></td>
     <td></td>
-    <td></td>
-    <td></td>
+    <td><i>Filename</i> : jdepend.txt</td>
   </tr>
 </table>
 
 [Back to top](#weatherforecast)
 <br>
- 
+
 ## *Compiling and Running*
 
 __*subject to change*__
@@ -246,12 +244,45 @@ __*subject to change*__
 - [json-simple](https://code.google.com/archive/p/json-simple/)
 - [Eclipse IDE](http://www.eclipse.org/downloads/packages/eclipse-ide-java-developers/oxygen3a) (*optional*, untuk *compiling*)
 
+Lakukan *clone repository* terlebih dahulu.
+Gunakan Eclipse IDE untuk melakukan *compiling* dan eksekusi program dengan lebih mudah.<br>
+atau<br>
+Jika tidak ingin menggunakan Eclipse, gunakan Makefile yang telah disediakan. Berikut tahapannya :
+1. Buka *console* baru, lalu arahkan *current directory* ke tempat dimana file-file hasil *clone repository* diletakkan.
+2. Ketikkan ```make clean``` terlebih dahulu untuk membersihkan folder.
+   Untuk pengguna Windows, gunakan perintah berikut
+   ```
+   rm src/com/pyra/weatherforecast/*.class
+   rm src/com/pyra/weatherforecast/data/*.class
+   ```
+   untuk *Windows Powershell*, atau
+   ```
+   del src/com/pyra/weatherforecast/*.class
+   del src/com/pyra/weatherforecast/data/*.class
+   ```
+   untuk *Windows Command Prompt* biasanya.
+3. Ketikkan ```make all``` untuk melakukan *compiling* dan eksekusi program, atau secara manual, untuk *compiling*, ketikkan ```make build```, lalu ```make run``` untuk melakukan eksekusi program.
+
 [Back to top](#weatherforecast)
 <br>
 
 ## *How to Use*
 
-TBD
+![](screenshots/main_searcher_empty.png)
+
+Diatas merupakan tampilan utama program. Pada *text bar* disebelah kanan tombol *Search*, masukkanlah kata kunci dari nama kota yang ingin dicari.
+
+![](screenshots/main_searcher.png)
+
+*Screenshot* diatas merupakan contoh hasil pencarian. Pilih kota yang diinginkan, akan muncul jendela baru. Tunggu sebentar, maka data cuaca dan prakiraan akan muncul. Berikut contohnya.
+
+![](screenshots/weather_screen_main.png)
+![](screenshots/weather_screen_forecast.png)
+
+Program ini menyediakan dua pilihan satuan untuk menampilkan data cuaca, yaitu dengan standar satuan *metric* atau *imperial*. Secara *default*, program menampilkan data dalam satuan *metric*. Untuk mengubahnya, pada jendela tersebut, klik "Unit" pada ujung kiri atas jendela, lalu pilih satuan yang diinginkan. Berikut contohnya.
+
+![](screenshots/weather_screen_main_unit.png)
+![](screenshots/weather_screen_main_after.png)
 
 [Back to top](#weatherforecast)
 <br>
