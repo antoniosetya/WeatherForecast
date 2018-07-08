@@ -270,7 +270,7 @@ Jika tidak ingin menggunakan Eclipse, gunakan Makefile yang telah disediakan. Be
 
 ![](screenshots/main_searcher_empty.png)
 
-Diatas merupakan tampilan utama program. Pada *text bar* disebelah kanan tombol *Search*, masukkanlah kata kunci dari nama kota yang ingin dicari.
+Diatas merupakan tampilan utama program. Pada *text bar* disebelah kiri tombol *Search*, masukkanlah kata kunci dari nama kota yang ingin dicari.
 
 ![](screenshots/main_searcher.png)
 
